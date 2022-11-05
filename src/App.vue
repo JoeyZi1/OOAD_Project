@@ -1,19 +1,31 @@
 <template>
   <div id="app">
-    <UserPage></UserPage> 
+
+    <router-view></router-view>
+    <!-- <UserPage></UserPage>  -->
+    <!-- <RepoBrowser></RepoBrowser> -->
   </div>
 </template>
 
 <script>
 import Demo from './components/Demo.vue'
 import UserPage from './components/UserPage.vue'
+import RepoBrowser from './components/RepoBrowser.vue'
 
 export default {
   name: 'App',
   components: {
     Demo,
-    UserPage
+    UserPage,
+    RepoBrowser
+  },
+
+  computed:{
+    key(){
+      return this.$route.fullPath
+    }
   }
+
 }
 </script>
 

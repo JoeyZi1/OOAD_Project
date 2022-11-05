@@ -4,9 +4,9 @@
         <div class="container-xxl">
   <div class="row">
     <div class="col-md-3 col-0 border-end">
-      <img class="media-object img-thumbnail rounded-circle w-100 mb-3" src="../assets/logo.png">
+      <img class="media-object img-thumbnail rounded-circle w-100 mb-3" :src=userImg>
       <div class="vstack gap-2 w-100">
-        <div class="w-100"><h4>Username</h4></div>
+        <div class="w-100"><h4>{{userName}}</h4></div>
         <button type="button" class="btn btn-outline-secondary">Edit profile</button>
         <div class="w-100">
           <el-link style="margin-right: 2px" :underline="false">
@@ -21,11 +21,11 @@
           <el-link :underline="false"><span style="margin-right: 2px">0</span>Following</el-link></div>
       </div>
     </div>
-    <div class="col-md-9 col-12t">
+    <div class="col-md-9 col-12">
         <br>
 
 
-        <ul class="nav nav-tabs sticky-top" id="myTab" role="tablist">
+        <ul class="nav nav-tabs sticky-top bg-white" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-tab-pane" type="button" role="tab" aria-controls="overview-tab-pane" aria-selected="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 1 16 16">
@@ -116,9 +116,12 @@
             <ul class="list-group list-group-flush" v-for="repo in repoList" :key="repo.id">
               <li class="list-group-item p-4 border-bottom">
                 <div class="d-flex w-100 justify-content-start mb-2">
-                  <el-link href="#" style="margin-right: 8px">
+                  <!-- <router-link to="/RepoBrowser" @click="enterRepo(repo.repoName)">   -->
+                    <el-link style="margin-right: 8px" @click="enterRepo(repo.repoName)">
                     <span class="repoName">{{repo.repoName}}</span>
-                  </el-link>
+                    </el-link>
+                  <!-- </router-link> -->
+                  
                   <span class="badge rounded-pill bg-secondary me-auto align-self-center">{{repo.permission}}</span>
                   <button type="button" class="btn btn-outline-secondary oneLine">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 1.5 16 16">
@@ -211,6 +214,7 @@
 </style>
 
 <script>
+import axios from 'axios';
 import Demo from './Demo.vue'
 
 export default {
@@ -218,8 +222,18 @@ export default {
     Demo,
   },
 
+  created: function() {
+    axios.get(this.$route.path).then((response)=>{
+      this.repoList = response.data.repoList
+      this.userName = response.data.userName
+      this.userImg = response.data.userImg
+    })
+  },
+
   data: function(){
     return {
+      userName: "",
+      userImg: "",
       repoList: [
         {repoName: 'Demo', permission: 'public', msg: 'Updated 2 days ago'},
         {repoName: 'CS309', permission: 'private', msg: 'Updated 2 days ago'},
@@ -229,6 +243,28 @@ export default {
         {repoName: 'Demo5', permission: 'public', msg: 'Updated 2 days ago'},
       ]
     }
+  },
+
+  methods: {
+    enterRepo: function(repoName){ 
+      this.$router.push(
+        {
+          name: "RepoBrowser",
+          params:{
+            userName: this.userName,
+            repoParam: repoName
+          }
+
+          // path: "/RepoBrowser/sb",
+          // query: {
+          //   path: "src"
+          // }
+        }
+      )
+
+      console.log(this.$route.path)
+    }
+
   }
 }
 
