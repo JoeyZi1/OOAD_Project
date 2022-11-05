@@ -2,15 +2,53 @@
 <div>
 <Demo></Demo>
 <div class="container-fluid bg-light ps-0 pe-0">
-  <div class="hstack gap-3 align-items-center pt-4 ps-5 pe-5 mb-3" style="height: 40px;">
-    <nav aria-label="breadcrumb" style="margin-right: auto;">
+  <div class="hstack gap-1 align-items-center pt-4 ps-5 pe-5 mb-3" style="height: 40px;">
+    <!-- <button type="button" class="btn btn-primary" @click="test()">test</button> -->
+    <svg v-if="true" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+      <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+    </svg>
+    <svg v-else xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 3px;" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
+      <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+    </svg>
+
+    <el-breadcrumb separator="/" style="margin-right: auto;">
+      <el-breadcrumb-item :to="{name:'UserPage' , params:{userName: this.$route.params.userName}}">
+        <a style="font-size: 20px;" >
+          {{this.$route.params.userName}}
+        </a>
+      </el-breadcrumb-item>
+      <el-breadcrumb-item :to="{name:'RepoBrowser' , params:{userName: this.$route.params.userName, repoParam: this.$route.params.repoParam, branchName: this.$route.params.branchName, queryPath: 'root'}, query: {t: +new Date() }}">
+        <a style="font-size: 20px;">
+          {{this.$route.params.repoParam}}
+        </a>
+      </el-breadcrumb-item>    
+      <span class="badge rounded-pill bg-secondary me-auto align-self-center">public</span>  
+    </el-breadcrumb>
+    
+
+    <!-- <nav aria-label="breadcrumb" style="margin-right: auto;">
+      
       <ol class="breadcrumb" style="font-size: larger; font-weight:bolder;" >
-        <li class="breadcrumb-item" ><a href="#">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Library</a></li>
-        <li class="breadcrumb-item active" style="margin-right: 8px" aria-current="page">Data</li>
+        
+        <li class="breadcrumb-item" >
+          <svg v-if="true" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+          </svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 3px;" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
+            <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+          </svg>
+          <a @click="as()">
+            {{this.$route.params.userName}}
+          </a>
+        </li>
+        <li class="breadcrumb-item" style="margin-right: 8px" aria-current="page">
+          <a>{{this.$route.params.repoParam}}</a>
+        </li>
         <span class="badge rounded-pill bg-secondary me-auto align-self-center">public</span>
       </ol>
-    </nav>
+    </nav> -->
+
+
 
     <button type="button" class="btn btn-outline-secondary oneLine btn-sm">
       watch
@@ -58,31 +96,39 @@
   <!-- code区域 -->
   <div class="tab-pane fade show active" id="overview-tab-pane" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
     <div class="row">
-      <div class="col-md-9 col-12">
+      <div class="col">
         <div class="hstack gap-3 resetPadding">
 
-          <div class="btn-group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+
+          <div class="dropdown">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuButton1">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-2" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H11a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 5 7h2.5V6A1.5 1.5 0 0 1 6 4.5v-1zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1zM3 11.5A1.5 1.5 0 0 1 4.5 10h1A1.5 1.5 0 0 1 7 11.5v1A1.5 1.5 0 0 1 5.5 14h-1A1.5 1.5 0 0 1 3 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 9 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
               </svg>
-              master
+              {{this.$route.params.branchName}}
             </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Separated link</a></li>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li v-for="branch in branchList" :key="branch.id">
+                <a class="dropdown-item" @click="changeBranch(branch.branchName)">{{branch.branchName}}</a>
+              </li>
             </ul>
           </div>
 
-          <el-link style="margin-right: 2px" :underline="false" class="me-auto">
+          <el-link v-if="this.$route.params.queryPath===root"  :underline="false" class="me-auto">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-2" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H11a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 5 7h2.5V6A1.5 1.5 0 0 1 6 4.5v-1zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1zM3 11.5A1.5 1.5 0 0 1 4.5 10h1A1.5 1.5 0 0 1 7 11.5v1A1.5 1.5 0 0 1 5.5 14h-1A1.5 1.5 0 0 1 3 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 9 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
             </svg>
-            <span style="margin-right: 2px">1</span>branch
+            <span style="margin-right: 2px">{{branchList.length}}</span>branch
           </el-link>
+
+          <el-breadcrumb v-else separator="/" class="me-auto">
+            <el-breadcrumb-item v-for="item in splitPath" :key = item.id>
+              <a  @click="jumpTo(item)">{{item}}</a>
+            </el-breadcrumb-item>
+
+            <el-breadcrumn-item>
+            </el-breadcrumn-item>
+          </el-breadcrumb>
 
           <div class="btn-group">
             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -115,44 +161,27 @@
           <div class="card-header text-start ps-3">
             Commit message
           </div>
-          <ul class="list-group list-group-flush">
+
+          <ul class="list-group list-group-flush" v-for="item in filterItemList" :key="item.id">
             <li class="list-group-item list-group-item-action text-start">
               <span class="float-start">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-primary bi bi-folder-fill me-2" viewBox="0 1 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" v-if="item.type === itemType_folder" width="16" height="16" fill="currentColor" class="text-primary bi bi-folder-fill me-2" viewBox="0 1 16 16">
                   <path d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.825a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"/>
                 </svg>
-                <el-link>
-                  folder name
-                </el-link>
-              </span>
-              <span style="position: absolute; margin-left: 20%;">message</span>
-              <span class="float-end">updated 2 days ago</span>
-            </li>
-            <li class="list-group-item list-group-item-action text-start">
-              <span class="float-start">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-primary bi bi-folder-fill me-2" viewBox="0 1 16 16">
-                  <path d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.825a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"/>
-                </svg>
-                <el-link>
-                  folder name
-                </el-link>
-              </span>
-              <span style="position: absolute; margin-left: 20%;">message</span>
-              <span class="float-end">updated 2 days ago</span>
-            </li>
-            <li class="list-group-item list-group-item-action text-start">
-              <span class="float-start">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark me-2" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" v-else width="16" height="16" fill="currentColor" class="bi bi-file-earmark me-2" viewBox="0 0 16 16">
                   <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
                 </svg>
-                <el-link>
-                  file name
+                <el-link @click="visit(item.itemName)">
+                  {{item.itemName}}
                 </el-link>
               </span>
-              <span style="position: absolute; margin-left: 20%;">message</span>
-              <span class="float-end">updated 2 days ago</span>
+              <span class="float-end">{{item.msg}}</span>
             </li>
           </ul>
+
+
+
+
         </div>
 
         <div class="card" style="width: 100%;">
@@ -170,7 +199,8 @@
 
 
       </div>
-      <div class="col-md-3 col-0 bg-light">
+
+      <div v-if="this.$route.params.queryPath===root" class="col-md-3 col-0 bg-light">
         About
       </div>
     </div>
@@ -244,11 +274,186 @@
 
 <script>
 import Demo from './Demo.vue'
+import axios from 'axios'
 
 export default {
   components: {
     Demo,
   },
+
+  data: function() {
+    return {
+      root: "root",
+      itemType_folder: "folder",
+      itemType_file: "file",
+      pageType_list: "list",
+      pageType_file: "file",
+
+
+      branchList: [
+        {branchName: "public"},
+        {branchName: "master"},
+        {branchName: "dev"},
+        {branchName: "debug"},
+      ],
+
+      itemList: [
+        // {type: "folder", itemName: "src", msg: "updated 2 days ago"},
+        // {type: "folder", itemName: "bin", msg: "updated 2 days ago"},
+        // {type: "folder", itemName: ".idea", msg: "updated 2 days ago"},
+        // {type: "file", itemName: "README.md", msg: "updated 2 days ago"},
+      ],
+      display: "list",
+      fileContent: "jlasfalfaslfslgjsaasfs",
+    }
+  },
+
+  methods: {
+    //提取path
+    test: function(item) {
+      var temp = this.$route.params.queryPath.split(item)
+      console.log(temp)
+    },
+
+    jumpTo: function(item) {
+      var user = this.$route.params.userName
+      var repo = this.$route.params.repoParam
+      var branch = this.$route.params.branchName
+      var temp = this.$route.params.queryPath.split(item)
+
+      //处理路径为root的情况
+      if (item === repo) {
+        this.$router.push(
+          {
+            name: "RepoBrowser",
+            params:{
+              userName: user,
+              repoParam: repo,
+              branchName: branch,
+              queryPath: 'root'
+            },
+            query: {
+              path: +new Date() //保证每次点击路由的query项都是不一样的，确保会重新刷新view
+            }
+          }
+        )
+        return
+      }
+
+      //处理其他跳转
+      var newPath = temp[0] + item
+      this.$router.push(
+        {
+          name: "RepoBrowser",
+          params:{
+            userName: user,
+            repoParam: repo,
+            branchName: branch,
+            queryPath: newPath
+          },
+          query: {
+            path: +new Date() //保证每次点击路由的query项都是不一样的，确保会重新刷新view
+          }
+        }
+      )
+
+      // console.log(temp)
+    },
+
+    visit: function(itemName) {
+      var user = this.$route.params.userName
+      var repo = this.$route.params.repoParam
+      var branch = this.$route.params.branchName
+      var pre = this.$route.params.queryPath
+      var newpath = pre + "_" + itemName
+      this.$router.push(
+        {
+          name: "RepoBrowser",
+          params:{
+            userName: user,
+            repoParam: repo,
+            branchName: branch,
+            queryPath: newpath
+          }
+        }
+      )
+      console.log(this.$route.path)
+      // axios.get(this.$route.fullPath).then((response)=>{
+      //   this.itemList = response.data.itemList
+      //   this.branchList = response.data.branchList
+      //   this.display = response.data.display
+      //   this.fileContent = response.data.response
+      // })
+    },
+
+    changeBranch: function(branch){
+      var user = this.$route.params.userName
+      var repo = this.$route.params.repoParam
+      var path = this.$route.params.queryPath
+      
+      this.$router.push(
+        {
+          name: "RepoBrowser",
+          params:{
+            userName: user,
+            repoParam: repo,
+            branchName: branch,
+            queryPath: path
+          },
+          // query: {
+          //   path: +new Date() //保证每次点击路由的query项都是不一样的，确保会重新刷新view
+          // }
+        }
+      )
+      axios.get(this.$route.path).then((response)=>{
+        this.itemList = response.data.itemList
+        this.branchList = response.data.branchList
+        this.display = response.data.display
+        this.fileContent = response.data.response
+      })
+    }
+  },
+
+  created: function() {
+    // console.log("the get axio is", this.$route.fullPath)
+    axios.get(this.$route.path).then((response)=>{
+      this.itemList = response.data.itemList
+      this.branchList = response.data.branchList
+      this.display = response.data.display
+      this.fileContent = response.data.response
+    })
+  },
+
+  computed: {
+      //将文件夹和文件分类排列
+      filterItemList () {
+        const folder_arr = this.itemList.filter(item => item.type === "folder")
+        const file_arr = this.itemList.filter(item => item.type === "file")
+        var arr = folder_arr.concat(file_arr)
+        // // 可能需要排序
+        // if (sortType!==1) {
+        //   arr.sort((p1, p2) => {
+        //     if (sortType===2) { // 升序
+        //       return p1.age - p2.age 
+        //     } else { // 降序
+        //       return p2.age - p1.age
+        //     }
+        //   })
+        // }
+        return arr
+      },
+
+      //提取path
+      splitPath () {
+        var pathList = this.$route.params.queryPath.split("_")
+        pathList[0] = this.$route.params.repoParam
+        return pathList
+      }
+  },
+
+  
+
+
 }
 
 </script>

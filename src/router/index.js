@@ -8,10 +8,20 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
     routes: [
-        {path: '/', redirect: "UserPage"},
-        {path: '/RepoBrowser', component: RepoBrowser},
-        {path: '/UserPage',name: "UserPage" , component: UserPage},
-        {path: '/:userName/:repoParam', name: "RepoBrowser", component: RepoBrowser},
+        {
+            path: '/', 
+            redirect: "UserPage/JoeyZi1"
+        },
+        {
+            path: '/UserPage/:userName',
+            name: "UserPage" , 
+            component: UserPage
+        },
+        {
+            path: '/RepoBrowser/:userName/:repoParam/:branchName/:queryPath', 
+            name: "RepoBrowser", 
+            component: RepoBrowser
+        },
     ]
 })
 

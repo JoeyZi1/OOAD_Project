@@ -223,6 +223,7 @@ export default {
   },
 
   created: function() {
+    
     axios.get(this.$route.path).then((response)=>{
       this.repoList = response.data.repoList
       this.userName = response.data.userName
@@ -252,17 +253,14 @@ export default {
           name: "RepoBrowser",
           params:{
             userName: this.userName,
-            repoParam: repoName
+            repoParam: repoName,
+            branchName: "master",
+            queryPath: "root"
           }
-
-          // path: "/RepoBrowser/sb",
-          // query: {
-          //   path: "src"
-          // }
         }
       )
 
-      console.log(this.$route.path)
+      //console.log(this.$route.path)
     }
 
   }

@@ -1,7 +1,7 @@
 <template>
 <nav class="navbar bg-dark navbar-expand-lg navbar-light">
   <div class="container-fluid">
-    <a class="navbar-brand text-light" href="#">
+    <a class="navbar-brand text-light" href="/">
         <img src="../assets/logo.png" alt="" width="26" height="26" class="d-inline-block align-text-top">
         MyGitHub
     </a>

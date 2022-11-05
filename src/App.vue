@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <router-view></router-view>
+    <router-view :key="key"></router-view>
     <!-- <UserPage></UserPage>  -->
     <!-- <RepoBrowser></RepoBrowser> -->
   </div>
@@ -19,12 +19,11 @@ export default {
     UserPage,
     RepoBrowser
   },
-
-  computed:{
-    key(){
-      return this.$route.fullPath
+  computed: {
+    key() {
+        return this.$route.fullPath
     }
-  }
+ }
 
 }
 </script>
