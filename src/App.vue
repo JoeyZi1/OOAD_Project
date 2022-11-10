@@ -1,6 +1,7 @@
 <template>
   <div id="app">
 
+    <!-- <Upload></Upload> -->
     <router-view :key="key"></router-view>
     <!-- <UserPage></UserPage>  -->
     <!-- <RepoBrowser></RepoBrowser> -->
@@ -17,7 +18,7 @@ export default {
   components: {
     Demo,
     UserPage,
-    RepoBrowser
+    RepoBrowser,
   },
   computed: {
     key() {

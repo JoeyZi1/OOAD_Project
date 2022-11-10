@@ -21,8 +21,7 @@
         <a style="font-size: 20px;">
           {{this.$route.params.repoParam}}
         </a>
-      </el-breadcrumb-item>    
-      <span class="badge rounded-pill bg-secondary me-auto align-self-center">public</span>  
+      </el-breadcrumb-item>
     </el-breadcrumb>
     
 
@@ -90,6 +89,7 @@
     </li>
   </ul>
 </div>
+
 <div class="container-xxl">
   <div class="tab-content" id="myTabContent">
   
@@ -130,7 +130,65 @@
             </el-breadcrumn-item>
           </el-breadcrumb>
 
+
           <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              Add
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_upload_file">Upload file</a></li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_upload_folder">Upload folder</a></li>
+            </ul>
+          </div>
+
+          <!-- Modal -->
+          <div class="modal fade" id="modal_upload_file" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Upload file</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row mx-3">
+                      <!-- <input type="file" class="form-control mb-2" webkitdirectory directory multiple/> -->
+                      <form enctype="multipart/form-data">
+                          <input class="form-control mb-2" type="file" @change="getFile($event)">
+                          <button type="button" class="btn btn-primary"  @click="submitForm($event)" data-bs-dismiss="modal">提交</button>
+                      </form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="modal_upload_folder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Upload folder</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row mx-3">
+                      <form enctype="multipart/form-data">
+                          <input class="form-control mb-2" type="file" @change="getFile($event)" webkitdirectory>
+                          <button type="button" class="btn btn-primary"  @click="submitForm($event)" data-bs-dismiss="modal">提交</button>
+                      </form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- <div class="btn-group">
             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               Add file
             </button>
@@ -141,18 +199,14 @@
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Separated link</a></li>
             </ul>
-          </div>
+          </div> -->
 
           <div class="btn-group">
             <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               Code
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Separated link</a></li>
+              <li><a class="dropdown-item" href="#">Download</a></li>
             </ul>
           </div>
         </div>
@@ -267,8 +321,18 @@
       Setting
   </div>
 
+
+
+
   </div>
 </div>
+
+
+
+
+
+
+
 </div>
 </template>
 
@@ -283,6 +347,9 @@ export default {
 
   data: function() {
     return {
+      file: '',
+
+
       root: "root",
       itemType_folder: "folder",
       itemType_file: "file",
@@ -386,6 +453,54 @@ export default {
       // })
     },
 
+    // uploadFile: function() {
+    //   var user = this.$route.params.userName
+    //   var repo = this.$route.params.repoParam
+    //   var branch = this.$route.params.branchName
+    //   var path = this.$route.params.queryPath
+    //   axios.post(this.$route.path, {
+    //     "userName": user,
+    //     "repoName": repo,
+    //     "branchName": branch,
+    //     "path": path
+    //   })
+
+    // },
+
+    getFile: function(event) {
+      this.file = event.target.files[0];
+      console.log(this.file);
+    },
+
+    submitForm: function(event) {
+      event.preventDefault();
+      let formData = new FormData();
+      formData.append('file', this.file);
+      formData.append('UserName', this.getUserName);
+      formData.append('RepoName', this.getRepoName);
+      formData.append('BranchName', this.getBranchName);
+      formData.append('FilePath', this.getFilePath);
+
+
+      let config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'UserName': this.getUserName,
+          'RepoName': this.getRepoName,
+          'BranchName': this.getBranchName,
+          'FilePath': this.getFilePath
+        }
+      }
+
+      this.$http.post(' http://127.0.0.1:8082/upload', formData, config).then(function (response) {
+        if (response.status === 200) {
+          console.log(response.data);
+        }
+      })
+
+    },
+
+
     changeBranch: function(branch){
       var user = this.$route.params.userName
       var repo = this.$route.params.repoParam
@@ -411,7 +526,8 @@ export default {
         this.display = response.data.display
         this.fileContent = response.data.response
       })
-    }
+    },
+
   },
 
   created: function() {
@@ -448,6 +564,22 @@ export default {
         var pathList = this.$route.params.queryPath.split("_")
         pathList[0] = this.$route.params.repoParam
         return pathList
+      },
+
+      getUserName() {
+        return this.$route.params.userName
+      },
+
+      getRepoName() {
+        return this.$route.params.repoParam
+      },
+
+      getBranchName() {
+        return this.$route.params.branchName
+      },
+
+      getFilePath() {
+        return this.$route.params.queryPath
       }
   },
 
@@ -457,3 +589,4 @@ export default {
 }
 
 </script>
+

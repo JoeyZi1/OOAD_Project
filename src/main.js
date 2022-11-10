@@ -7,10 +7,15 @@ import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios';
 import './mock'
 import router from './router/index'
+import uploader from 'vue-simple-uploader'
+import jQuery from 'jquery'
 
 
+Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+Vue.use(uploader);
+Vue.use(jQuery)
 
 new Vue({
   render: h => h(App),

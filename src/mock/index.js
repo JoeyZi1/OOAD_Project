@@ -24,6 +24,9 @@ let repoData = Mock.mock({
 })
 
 
+
+
+
 // Mock.mock(RegExp('/UserPage[0-9a-zA-Z/:]*'), () => {
 //     return userPageData
 // })
@@ -172,3 +175,16 @@ Mock.mock(RegExp('/RepoBrowser/JoeyZi1/OOAD_Project/master/root'), () => {
     console.log("mock info")
     return joey_repo_root
 })
+
+
+
+
+
+let upload_response = Mock.mock({
+    "status": 200
+})
+
+// Mock.mock(RegExp('http://127.0.0.1:8081/upload'), () => {
+//     console.log("accept file")
+//     return upload_response
+// })
