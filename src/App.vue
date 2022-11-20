@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <router-view :key="key"></router-view>
-    
+    <!-- <router-view :key="key"></router-view> -->
+    <login></login>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import Demo from './components/Demo.vue'
 import UserPage from './components/UserPage.vue'
 import RepoBrowser from './components/RepoBrowser.vue'
-
+import login from './components/login.vue'
 
 export default {
   name: 'App',
@@ -17,14 +17,34 @@ export default {
     Demo,
     UserPage,
     RepoBrowser,
+    login
   },
   computed: {
     key() {
         return this.$route.fullPath
     }
- }
-
+  },
 }
+
+// router.beforeEach((to, from, next) =>{
+//   let token = sessionStorage.getItem('token')
+//   if(token || to.path === "/login"){
+//     axios.get('token/' + token).then((response)=>{
+//         judge = response.data.judge
+//     })
+//     if(judge){
+//       next();
+//     }else{
+//       next('/login')
+//     }
+    
+//   }else{
+//     next('/login')
+//   }
+// })
+
+
+
 </script>
 
 <style>

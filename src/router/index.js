@@ -3,6 +3,7 @@ import Demo from '../components/Demo.vue'
 import RepoBrowser from '../components/RepoBrowser.vue'
 import UserPage from '../components/UserPage.vue'
 import VueRouter from 'vue-router'
+import login from '../components/login.vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const router = new VueRouter({
             path: '/RepoBrowser/:userName/:repoParam/:branchName/:queryPath', 
             name: "RepoBrowser", 
             component: RepoBrowser
+        },
+        {
+            path: '/login', 
+            name: "login", 
+            component: login
         },
     ]
 })

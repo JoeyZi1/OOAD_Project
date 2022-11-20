@@ -15,6 +15,8 @@ import 'highlight.js/styles/googlecode.css' //样式文件
 import {lineNumbersBlock} from '@/highlight/highlight-line-number'
 import Vuetify from 'vuetify'
 import vuetify from './plugins/vuetify'
+import store  from "./store";
+
 
 Vue.directive('highlight', {
   update(el){
@@ -46,5 +48,6 @@ Vue.use(Vuetify);
 new Vue({
   vuetify,
   render: h => h(App),
-  router: router
+  router: router,
+  store
 }).$mount('#app')
