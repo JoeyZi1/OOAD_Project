@@ -388,6 +388,7 @@
 <script>
 import Demo from './Demo.vue'
 import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:8080';
 
 import 'markdown-it-vue/dist/markdown-it-vue.css'
 import content from '../file/README.md'

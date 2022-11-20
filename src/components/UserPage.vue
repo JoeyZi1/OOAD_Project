@@ -216,6 +216,7 @@
 <script>
 import axios from 'axios';
 import Demo from './Demo.vue'
+axios.defaults.baseURL = 'http://localhost:8080';
 
 export default {
   components: {
@@ -223,8 +224,8 @@ export default {
   },
 
   mounted: function() {
-    
     axios.get(this.$route.path).then((response)=>{
+    // axios.get(this.$route.path).then((response)=>{
       this.repoList = response.data.repoList
       this.userName = response.data.userName
       this.userImg = response.data.userImg
