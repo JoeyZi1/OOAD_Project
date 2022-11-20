@@ -1,10 +1,7 @@
 <template>
   <div id="app">
-
-    <!-- <Upload></Upload> -->
     <router-view :key="key"></router-view>
-    <!-- <UserPage></UserPage>  -->
-    <!-- <RepoBrowser></RepoBrowser> -->
+    
   </div>
 </template>
 
@@ -12,6 +9,7 @@
 import Demo from './components/Demo.vue'
 import UserPage from './components/UserPage.vue'
 import RepoBrowser from './components/RepoBrowser.vue'
+
 
 export default {
   name: 'App',

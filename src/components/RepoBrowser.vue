@@ -1,6 +1,7 @@
 <template>
 <div>
 <Demo></Demo>
+
 <div class="container-fluid bg-light ps-0 pe-0">
   <div class="hstack gap-1 align-items-center pt-4 ps-5 pe-5 mb-3" style="height: 40px;">
     <!-- <button type="button" class="btn btn-primary" @click="test()">test</button> -->
@@ -23,29 +24,6 @@
         </a>
       </el-breadcrumb-item>
     </el-breadcrumb>
-    
-
-    <!-- <nav aria-label="breadcrumb" style="margin-right: auto;">
-      
-      <ol class="breadcrumb" style="font-size: larger; font-weight:bolder;" >
-        
-        <li class="breadcrumb-item" >
-          <svg v-if="true" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
-            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
-          </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 3px;" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
-            <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
-          </svg>
-          <a @click="as()">
-            {{this.$route.params.userName}}
-          </a>
-        </li>
-        <li class="breadcrumb-item" style="margin-right: 8px" aria-current="page">
-          <a>{{this.$route.params.repoParam}}</a>
-        </li>
-        <span class="badge rounded-pill bg-secondary me-auto align-self-center">public</span>
-      </ol>
-    </nav> -->
 
 
 
@@ -71,10 +49,6 @@
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="repositroies-tab" data-bs-toggle="tab" data-bs-target="#repositroies-tab-pane" type="button" role="tab" aria-controls="repositroies-tab-pane" aria-selected="false">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-record-circle" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-            <path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-          </svg>
             Issues
         </button>
     </li>
@@ -188,19 +162,6 @@
           </div>
 
 
-          <!-- <div class="btn-group">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              Add file
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Separated link</a></li>
-            </ul>
-          </div> -->
-
           <div class="btn-group">
             <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               Code
@@ -233,25 +194,39 @@
             </li>
           </ul>
 
-
-
-
         </div>
 
-        <div class="card" style="width: 100%;">
-          <div class="card-header text-start bg-white" style="font-weight: bolder;">
+        
+
+        <div class="card" v-if="this.$route.params.queryPath===root" style="width: 100%;">
+          <div class="card-header text-start bg-white sticky-top" style="font-weight: bolder;">
             README.md
           </div>
           <div class="card-body">
-            <h5 class="card-title">Special title treatment</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <div class="markdown-body" style="text-align:left">
+              <markdown />
+              <markdown />
+              <markdown />
+            </div>
           </div>
         </div>
 
+        <div class="card" v-else style="width: 100%;">
+          <div class="card-header text-start bg-light sticky-top" style="font-weight: bolder;">
+            file content
+          </div>
+          <div class="card-body">
 
+            <div class="content" v-highlight>
+              <pre>
+                <code>
+                  {{codeFile}}
+                </code>
+              </pre>
+            </div>
 
-
+          </div>
+        </div>
       </div>
 
       <div v-if="this.$route.params.queryPath===root" class="col-md-3 col-0 bg-light">
@@ -265,54 +240,123 @@
 
   <!-- Issue -->
   <div class="tab-pane fade" id="repositroies-tab-pane" role="tabpanel" aria-labelledby="repositroies-tab" tabindex="0">
-      <div class="hstack gap-3 border-bottom resetPadding">
-          <input class="form-control me-auto" type="text" placeholder="Find a repository..." aria-label="Find a repository..." @keyup.enter="submit">
-          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+      <div class="hstack gap-3 border-bottom resetPadding mb-3">
+          <input class="form-control me-auto" type="text" placeholder="Find an issue..." aria-label="Find an issue..." @keyup.enter="submit">
+          
               <div class="btn-group" role="group">
                   <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  Type
+                  Filters
                   </button>
                   <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">All</a></li>
-                  <li><a class="dropdown-item" href="#">Public</a></li>
-                  <li><a class="dropdown-item" href="#">Private</a></li>
+                  <li><a class="dropdown-item" @click="filterIssue(issueOpen)">Open</a></li>
+                  <li><a class="dropdown-item" @click="filterIssue(issueClosed)">Closed</a></li>
                   </ul>
               </div>
 
-              <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  Language
-                  </button>
-                  <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">All</a></li>
-                  <li><a class="dropdown-item" href="#">C</a></li>
-                  <li><a class="dropdown-item" href="#">C++</a></li>
-                  <li><a class="dropdown-item" href="#">JAVA</a></li>
-                  <li><a class="dropdown-item" href="#">Python</a></li>
-                  </ul>
-              </div>
-
-              <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  Sort
-                  </button>
-                  <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Last updated</a></li>
-                  <li><a class="dropdown-item" href="#">Name</a></li>
-                  <li><a class="dropdown-item" href="#">Stars</a></li>
-                  </ul>
-              </div>
-              
-          </div>
 
           <div class="vr"></div>
-          <button type="button" class="btn btn-success oneLine">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
-              <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
-              </svg>
-              New
+          <button type="button"  class="btn btn-success oneLine" data-bs-toggle="modal" data-bs-target="#modal_new_issue">
+              New Issue
           </button>
+
+
+          <!-- Modal -->
+          <div class="modal fade" id="modal_new_issue" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">New Issue</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row mx-3">
+                    <div class="input-group mt-3 mb-3">
+                      <span class="input-group-text" id="basic-addon1">Title</span>
+                      <input type="text" v-model="issueTitle" class="form-control" placeholder="Enter a Issue title" >
+                    </div>
+
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">Comment</span>
+                      <input type="text" v-model="issueComment" class="form-control" placeholder="Add a comment" >
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addIssue()">Add</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
       </div>
+
+      
+
+      <div class="card mb-4" style="width: 100%;">
+        <div class="card-header text-start ps-3 pt-2 pb-2">
+          {{issueShow}}<span> issue</span>
+        </div>
+
+        <v-expansion-panels>
+          <v-expansion-panel v-for="item in filterIssueList" :key="item.id">
+            <v-expansion-panel-header>
+              <div class="hstack">
+
+              <span class="float-start">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-record-circle me-1" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+              </svg>
+              <el-link>
+                {{item.issueName}}
+              </el-link>
+              </span>
+              </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              
+
+
+              <v-timeline align-top=true dense=true>
+                <v-timeline-item v-for="entry in item.issueContent" :key="entry.id">
+                  <template v-slot:icon>
+                    <v-avatar >
+                      <img src="http://i.pravatar.cc/64">
+                    </v-avatar>
+                  </template>
+                  <v-card class="elevation-2">
+                    <v-card-title class="headline">{{entry.user}}</v-card-title>
+                    <v-card-subtitle>
+                      {{entry.comment}}
+                    </v-card-subtitle>
+                    <v-card-text>
+                      {{entry.commentDate}}
+                    </v-card-text>
+                  </v-card>
+                </v-timeline-item>
+              </v-timeline>
+
+              <v-divider></v-divider>
+
+
+              <v-textarea clearable clear-icon="cancel" filled name="comments" v-model="issueComment"></v-textarea>
+
+              <button type="button" class="btn btn-primary" @click="addComment(item.id)">Add comment</button> 
+
+
+
+
+
+
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </div>
+
+      
+
+
   </div>
   <!-- //Issue -->
 
@@ -329,9 +373,14 @@
 
 
 
-
-
-
+<v-footer padless class="mt-5">
+  <v-col
+    class="text-center"
+    cols="12"
+  >
+    {{ new Date().getFullYear() }} — <strong>CS309 Project</strong>
+  </v-col>
+</v-footer>
 
 </div>
 </template>
@@ -340,14 +389,34 @@
 import Demo from './Demo.vue'
 import axios from 'axios'
 
+import 'markdown-it-vue/dist/markdown-it-vue.css'
+import content from '../file/README.md'
+import markdown from '../file/README.md'
+// 代码高亮
+import 'highlight.js/styles/github.css'
+// 其他元素使用 github 的样式
+import 'github-markdown-css'
+
+
+
+
 export default {
   components: {
     Demo,
+    markdown
   },
 
   data: function() {
     return {
+      content,
+      codeFile: "int main(){\n\tint a = 1;\n\ta += 1;\n\t}",
+
       file: '',
+
+      //issue form
+      issueTitle: '',
+      issueComment: '',
+
 
 
       root: "root",
@@ -372,10 +441,67 @@ export default {
       ],
       display: "list",
       fileContent: "jlasfalfaslfslgjsaasfs",
+
+
+
+      issueOpen: "open",
+      issueClosed: "closed",
+      issueShow: "open",
+      issueList: [
+        {issueName: "Please consider adding a license", 
+          issueCondition: "open",
+          issueContent: [
+            {comment: 'Test comment', user: 'Joey', commentDate: new Date()},
+            {comment: 'Test comment 2', user: 'Peter', commentDate: new Date()}
+          ]
+        
+        },
+        {issueName: "Consider adding keyboard shortcut image", issueCondition: "open",
+          issueContent: [
+              {comment: 'Test comment', user: 'Joey', commentDate: new Date()},
+              {comment: 'Test comment 2', user: 'Peter', commentDate: new Date()}
+            ]
+        
+        },
+        {issueName: "Consider adding tere", issueCondition: "closed",
+          issueContent: [
+              {comment: 'Test comment', user: 'Joey', commentDate: new Date()},
+              {comment: 'Test comment 2', user: 'Peter', commentDate: new Date()}
+            ]
+        
+        },
+
+      ],
     }
   },
 
   methods: {
+    addComment: function(name) {
+      var index = this.issueList.findIndex(issue => {
+            if (issue.id == name) {
+                return true;
+            }
+      });
+      this.issueList[index].issueContent.push({comment: this.issueComment, user: "Joey", commentDate: new Date()})
+      this.issueComment = ''
+    },
+
+    addIssue: function() {
+      var comment = [{comment: this.issueComment, user: "Joey", commentDate: new Date()}]
+      var entry = {issueName: this.issueTitle, issueCondition: "open", issueContent: comment}
+      this.issueList.push(entry)
+      this.issueTitle = ''
+      this.issueComment = ''
+    },
+
+    filterIssue: function(flag) {
+      if (flag === this.issueOpen) {
+        this.issueShow = "open"
+      } else {
+        this.issueShow = "closed"
+      }
+    },
+
     //提取path
     test: function(item) {
       var temp = this.$route.params.queryPath.split(item)
@@ -445,27 +571,7 @@ export default {
         }
       )
       console.log(this.$route.path)
-      // axios.get(this.$route.fullPath).then((response)=>{
-      //   this.itemList = response.data.itemList
-      //   this.branchList = response.data.branchList
-      //   this.display = response.data.display
-      //   this.fileContent = response.data.response
-      // })
     },
-
-    // uploadFile: function() {
-    //   var user = this.$route.params.userName
-    //   var repo = this.$route.params.repoParam
-    //   var branch = this.$route.params.branchName
-    //   var path = this.$route.params.queryPath
-    //   axios.post(this.$route.path, {
-    //     "userName": user,
-    //     "repoName": repo,
-    //     "branchName": branch,
-    //     "path": path
-    //   })
-
-    // },
 
     getFile: function(event) {
       this.file = event.target.files[0];
@@ -538,6 +644,7 @@ export default {
       this.display = response.data.display
       this.fileContent = response.data.response
     })
+
   },
 
   computed: {
@@ -558,6 +665,13 @@ export default {
         // }
         return arr
       },
+
+      filterIssueList () {
+        var arr = this.issueList.filter(item => item.issueCondition === this.issueShow)
+        return arr
+      },
+
+
 
       //提取path
       splitPath () {
@@ -590,3 +704,44 @@ export default {
 
 </script>
 
+
+
+
+
+
+
+<style>
+pre {
+  position: relative;
+  min-width: 600px;
+  margin: 0;
+}
+.hljs {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 1px;
+  color: #d5e4e4;
+  font-weight: 200;
+  font-size: 0.75rem;
+  font-family: Menlo, Monaco, Consolas, Courier, monospace;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  border: 0;
+  text-align: start;
+}
+.hljs ol {
+  margin: 0 0 0 35px;
+  padding: 0;
+  list-style-type: decimal;
+}
+.hljs ol li {
+  /* padding: 5px; */
+  /* padding-left: 10px; */
+  color: #131414;
+  white-space:pre-line;
+  /* list-style: decimal-leading-zero; */
+  list-style-position: outside;
+  border-left: 1px solid white(180 98% 1%);
+}
+</style>
