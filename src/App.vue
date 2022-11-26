@@ -9,6 +9,7 @@
 import Demo from './components/Demo.vue'
 import UserPage from './components/UserPage.vue'
 import RepoBrowser from './components/RepoBrowser.vue'
+import page404 from './components/404.vue'
 
 
 export default {
@@ -17,6 +18,7 @@ export default {
     Demo,
     UserPage,
     RepoBrowser,
+    page404,
   },
   computed: {
     key() {

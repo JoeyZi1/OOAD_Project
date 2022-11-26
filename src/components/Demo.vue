@@ -34,6 +34,9 @@
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
+      <v-avatar max-size="45" style="background-color: coral;">
+        <span class="white--text headline">62</span>
+      </v-avatar>
     </div>
     
   </div>
