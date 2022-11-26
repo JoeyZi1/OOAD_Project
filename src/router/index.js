@@ -4,6 +4,7 @@ import RepoBrowser from '../components/RepoBrowser.vue'
 import UserPage from '../components/UserPage.vue'
 import VueRouter from 'vue-router'
 import login from '../components/login.vue'
+import RepoRedirect from '../components/RepoRedirect.vue'
 
 Vue.use(VueRouter)
 
@@ -11,7 +12,8 @@ const router = new VueRouter({
     routes: [
         {
             path: '/', 
-            redirect: "UserPage/JoeyZi1"
+            redirect: "UserPage/User_A"
+            // redirect: "login"
         },
         {
             path: '/UserPage/:userName',
@@ -28,6 +30,11 @@ const router = new VueRouter({
             name: "login", 
             component: login
         },
+        {
+            path:'/RepoRedirect/:userName/:repoParam/:branchName/:queryPath',
+            name:'RepoRedirect',
+            component:RepoRedirect
+        }
     ]
 })
 

@@ -34,6 +34,9 @@
       folk
     </button>  
     <button type="button" class="btn btn-outline-secondary oneLine btn-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 1.5 16 16">
+          <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+      </svg>
       star
     </button>   
   </div>
@@ -45,6 +48,11 @@
             <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"/>
           </svg>
             Code
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="commits-tab" data-bs-toggle="tab" data-bs-target="#commits-tab-pane" type="button" role="tab" aria-controls="repositroies-tab-pane" aria-selected="false">
+            Commits
         </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -83,17 +91,24 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li v-for="branch in branchList" :key="branch.id">
-                <a class="dropdown-item" @click="changeBranch(branch.branchName)">{{branch.branchName}}</a>
+                <a class="dropdown-item" @click="enterBranch(branch.branchName)">{{branch.branchName}}</a>
               </li>
             </ul>
           </div>
-
+          
           <el-link v-if="this.$route.params.queryPath===root"  :underline="false" class="me-auto">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-2" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H11a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 5 7h2.5V6A1.5 1.5 0 0 1 6 4.5v-1zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1zM3 11.5A1.5 1.5 0 0 1 4.5 10h1A1.5 1.5 0 0 1 7 11.5v1A1.5 1.5 0 0 1 5.5 14h-1A1.5 1.5 0 0 1 3 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 9 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
             </svg>
             <span style="margin-right: 2px">{{branchList.length}}</span>branch
           </el-link>
+
+          <!-- <el-link v-if="this.$route.params.queryPath===root"  :underline="false" class="me-auto" @click="getCommitList()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-2" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H11a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 5 7h2.5V6A1.5 1.5 0 0 1 6 4.5v-1zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1zM3 11.5A1.5 1.5 0 0 1 4.5 10h1A1.5 1.5 0 0 1 7 11.5v1A1.5 1.5 0 0 1 5.5 14h-1A1.5 1.5 0 0 1 3 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 9 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
+            </svg>
+            <span style="margin-right: 2px">commit</span>
+          </el-link> -->
 
           <el-breadcrumb v-else separator="/" class="me-auto">
             <el-breadcrumb-item v-for="item in splitPath" :key = item.id>
@@ -104,7 +119,20 @@
             </el-breadcrumn-item>
           </el-breadcrumb>
 
-
+          <button type="button" class="btn btn-outline-secondary" @click="createBranch()">
+              create new branch
+          </button>
+          <el-dialog title="Create new branch" :visible.sync="branchFormVisible" @close="onClose">
+            <el-form ref="branchform" :model="branchform"  label-width="120px" style="align:center" >
+              <el-form-item label="Branch Name">
+                <el-input v-model="branchform.name"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitBranchForm('branchform')">Submit</el-button>
+                <el-button type="danger" @click=" branchFormVisible = false">Cancel</el-button>
+              </el-form-item>
+            </el-form>
+          </el-dialog>
           <div class="btn-group">
             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               Add
@@ -149,7 +177,7 @@
                 <div class="modal-body">
                   <div class="row mx-3">
                       <form enctype="multipart/form-data">
-                          <input class="form-control mb-2" type="file" @change="getFile($event)" webkitdirectory>
+                          <input class="form-control mb-2" type="file" @change="getFile($event)" webkitdirectory mozdirectory>
                           <button type="button" class="btn btn-primary"  @click="submitForm($event)" data-bs-dismiss="modal">提交</button>
                       </form>
                   </div>
@@ -199,7 +227,7 @@
         
 
         <div class="card" v-if="this.$route.params.queryPath===root" style="width: 100%;">
-          <div class="card-header text-start bg-white sticky-top" style="font-weight: bolder;">
+          <div class="card-header text-start bg-white " style="font-weight: bolder;">
             README.md
           </div>
           <div class="card-body">
@@ -232,11 +260,45 @@
       <div v-if="this.$route.params.queryPath===root" class="col-md-3 col-0 bg-light">
         About
       </div>
+     
     </div>
+
   </div>
   <!-- //code区域 -->
-  
 
+  <!-- commits区域 -->
+  <div class="tab-pane fade" id="commits-tab-pane" role="tabpanel" aria-labelledby="commits-tab" tabindex="0">
+    <div class="card mb-4 mt-3" style="width: 100%;">
+      <div class="card-header text-start ps-3 pt-2 pb-2 ">
+        <span> Commits</span>
+      </div>
+      <el-table
+        :cell-style="styleBack"
+        :header-cell-style="getRowClass"
+        :data="commitList"
+        border
+        style="width: 100%">
+          <el-table-column
+            prop="commitUser"
+            label="User">
+          </el-table-column>
+          <el-table-column
+            prop="time"
+            label="time">
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="commitId"
+            prop="commitId">
+              <template slot-scope="scope" > 
+                  <el-button type="primary" size="mini" @click="rollback(scope.row.commitId)">{{scope.row.commitId}}</el-button>
+              </template>
+          </el-table-column>
+        </el-table>
+    </div>
+</div>
+  <!-- commits区域 -->
+  
 
   <!-- Issue -->
   <div class="tab-pane fade" id="repositroies-tab-pane" role="tabpanel" aria-labelledby="repositroies-tab" tabindex="0">
@@ -321,8 +383,11 @@
               <v-timeline align-top=true dense=true>
                 <v-timeline-item v-for="entry in item.issueContent" :key="entry.id">
                   <template v-slot:icon>
-                    <v-avatar >
+                    <!-- <v-avatar >
                       <img src="http://i.pravatar.cc/64">
+                    </v-avatar> -->
+                    <v-avatar color="orange" size="48">
+                      <span class="white--text headline">{{entry.user.slice(0,2)}}</span>
                     </v-avatar>
                   </template>
                   <v-card class="elevation-2">
@@ -360,12 +425,49 @@
   </div>
   <!-- //Issue -->
 
+  <!-- setting -->
 
   <div class="tab-pane fade" id="star-tab-pane" role="tabpanel" aria-labelledby="star-tab" tabindex="0">
-      Setting
+    <div class="row">
+      <div class="col">
+        <v-card
+          class="mx-auto"
+          height="400"
+          width="256"
+        >
+          <v-navigation-drawer
+            class="deep-purple accent-4"
+            dark
+            permanent
+          >
+            <v-list>
+              <v-list-item
+                v-for="item in setitems"
+                :key="item.title"
+                link
+              >
+                <v-list-item-icon>
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-icon>
+      
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+      
+            <template v-slot:append>
+              <div class="pa-2">
+                <v-btn block>Logout</v-btn>
+              </div>
+            </template>
+          </v-navigation-drawer>
+        </v-card>
+      </div>
+    </div>
   </div>
 
-
+  <!-- setting -->
 
 
   </div>
@@ -388,7 +490,8 @@
 <script>
 import Demo from './Demo.vue'
 import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:8080';
+// axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = 'http://10.27.133.155:8080';
 
 import 'markdown-it-vue/dist/markdown-it-vue.css'
 import content from '../file/README.md'
@@ -400,7 +503,6 @@ import 'github-markdown-css'
 
 
 
-
 export default {
   components: {
     Demo,
@@ -409,8 +511,13 @@ export default {
 
   data: function() {
     return {
+      setitems: [
+        { title: 'Dashboard', icon: 'dashboard' },
+        { title: 'Account', icon: 'account_box' },
+        { title: 'Admin', icon: 'gavel' },
+      ],
       content,
-      codeFile: "int main(){\n\tint a = 1;\n\ta += 1;\n\t}",
+      codeFile: "\nint main(){\n\tint a = 1;\n\ta += 1;\n\t}",
 
       file: '',
 
@@ -473,10 +580,114 @@ export default {
         },
 
       ],
+      commitList:[
+        
+      ],
+      rollbackJudge:0,
+      branchform:{name:''},
+      branchFormVisible:false
+
     }
   },
 
   methods: {
+    async deleteBranch(branchname){
+        var deleteJudge = 0
+        await axios.get("/createBranch/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName ).then((response)=>{
+          branchJudge = response.data
+        })
+    },
+    enterBranch(branchname){
+      this.$router.push({
+          name: "RepoBrowser",
+          params:{
+            userName: this.$route.params.userName,
+            repoParam: this.$route.params.repoParam,
+            branchName: branchname,
+            queryPath: "root"
+          },
+          query: {
+            path: +new Date() 
+          }
+        }
+      )
+    },
+    async submitBranchForm(){
+        var newBranchName = this.branchform.name
+        var branchJudge = 0
+        await axios.get("/createBranch/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/" + newBranchName).then((response)=>{
+          branchJudge = response.data
+        })
+        console.log('-------------------------------------------create branch','branchjudge',branchJudge)
+        console.log("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/createBranch/" + newBranchName)
+        this.branchFormVisible = false
+        if (branchJudge==0){
+          alert('Create failed.');
+        } else{
+          this.branchList.push(newBranchName)
+          this.$router.push({
+              name: "RepoBrowser",
+              params:{
+                userName: this.$router.params.userName,
+                repoParam: this.$router.params.repoParam,
+                branchName: newBranchName,
+                queryPath: "root"
+              },
+              query: {
+                path: +new Date() 
+              }
+            }
+          )
+       
+        }
+    },
+    createBranch(){
+        this.branchFormVisible = true  
+    },
+    async rollback(id){
+      console.log('---------------------------------------------rollback', id)
+      console.log("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + id + '/Rollback')
+      await axios.get("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/" + id + '/Rollback').then((response)=>{
+        this.rollbackJudge = response.data
+      })
+      console.log(this.rollbackJudge)
+      if(this.rollbackJudge==1){
+        
+        // window.location.reload();
+        console.log('this.rollbackJudge=================================')
+        this.$router.push(
+          {
+            name: "RepoBrowser",
+            params:{
+              userName: this.$route.params.userName,
+              repoParam: this.$route.params.repoParam,
+              branchName: this.$route.params.branchName,
+              queryPath: "root"
+            },
+            query: {
+              path: +new Date() 
+            }
+          }
+        )
+        console.log('this.rollbackJudge========sgdhsjdfjf=========================')
+          
+      } else{
+        alert('Rollback failed!')
+        // , ' ', function(){
+        //   // window.location.reload();
+        //   this.$router.push({
+        //       name: "RepoBrowser",
+        //       params:{
+        //         userName: this.$router.params.userName,
+        //         repoParam: this.$router.params.repoParam,
+        //         branchName: "master",
+        //         queryPath: "root"
+        //       }
+        //     }
+        //   )
+        //   });
+      }
+    },
     addComment: function(name) {
       var index = this.issueList.findIndex(issue => {
             if (issue.id == name) {
@@ -599,7 +810,10 @@ export default {
         }
       }
 
-      this.$http.post(' http://127.0.0.1:8082/upload', formData, config).then(function (response) {
+      console.log("----------------------sdfsghgdhfgh----------------------------");
+      console.log('/RepoBrowser/'+ this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/upload');
+
+      axios.post('/RepoBrowser/'+ this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/upload', formData, config).then(function (response) {
         if (response.status === 200) {
           console.log(response.data);
         }
@@ -638,12 +852,18 @@ export default {
   },
 
   created: function() {
-    // console.log("the get axio is", this.$route.fullPath)
+    console.log("the get axio is", this.$route.path)
+    // axios.get(this.$route.path).then((response)=>{
     axios.get(this.$route.path).then((response)=>{
       this.itemList = response.data.itemList
       this.branchList = response.data.branchList
       this.display = response.data.display
       this.fileContent = response.data.response
+    })
+    console.log("----------------------sdfsghgdhfgh----------------------------");
+    console.log('/RepoBrowser/'+ this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/upload');
+    axios.get("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/getCommitList').then((response)=>{
+    this.commitList = response.data.commitList
     })
 
   },

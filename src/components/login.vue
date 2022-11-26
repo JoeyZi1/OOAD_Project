@@ -54,11 +54,14 @@
   </div>
 </template>
 <script>
- 
+import axios from 'axios'
+// axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = 'http://10.27.133.155:8080';
 export default {
   name: "Login",
   data: function () {
     return {
+      loginjudge:0,
       loginForm: {
         account: "",
         passWord: "",
@@ -72,17 +75,19 @@ export default {
  
   methods: {
     signIn(formName){
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
           var judge = false 
           var token
           if (valid) {
-            axios.get('login/'+this.loginForm.account+'/'+this.loginForm.passWord).then((response)=>{
-              judge = response.data.judge
-              token = response.data.token
+            console.log('/login/signin/'+this.loginForm.account+'/'+this.loginForm.passWord)
+            await axios.get('/login/signin/'+this.loginForm.account+'/'+this.loginForm.passWord).then((response)=>{
+              judge = response.data.Login
+              token = response.data.Token
             })
             if(judge){
               this.$store.commit('edit', this.loginForm.account)
               alert('Sign in suceessfully!')
+              console.log(token)
               window.sessionStorage.setItem('Token', token)
               this.$router.push({
                 name: "UserPage",
@@ -90,23 +95,23 @@ export default {
                   userName: this.loginForm.account,
                 }
               })
+            } else{
+               alert('Wrong account or passward!');
             }
-            alert('Wrong account or passward!');
           } else {
             alert('error submit!!');
             return false;
           }
       });
     },
-    createAccount(formName){
-      this.$refs[formName].validate((valid) => {
+    async createAccount(formName){
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
            var data = {account:this.loginForm.account, passWord:this.loginForm.passWord}
-           var judge = false 
-           axios.get('setAccount/', data).then((response)=>{
-              judge = response.data.judge
-           })
-           if(judge){
+           await axios.get('/login/signup/'+data.account+'/'+data.passWord)
+                          .then((response)=>{this.loginjudge = response.data})
+           console.log('---------------------------------'+this.loginjudge)
+           if(this.loginjudge==1){
             alert('Create account successfully!');
            } else{
             alert('Duplicate user name!');

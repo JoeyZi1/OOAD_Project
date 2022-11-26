@@ -17,6 +17,26 @@ import Vuetify from 'vuetify'
 import vuetify from './plugins/vuetify'
 import store  from "./store";
 
+router.beforeEach((to, from, next) => {
+    if (to.name!='login') {
+      let token = window.sessionStorage.getItem("Token")
+      console.log(token)
+      if (token) {
+        next()
+      } else {
+        Vue.prototype.$message({
+          type: "error",
+          message: "请先登录"
+       });
+        next('/login')
+      }
+    } else {
+      next()
+    }
+  })
+  
+  
+
 
 Vue.directive('highlight', {
   update(el){

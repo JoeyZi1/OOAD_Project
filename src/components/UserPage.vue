@@ -216,7 +216,8 @@
 <script>
 import axios from 'axios';
 import Demo from './Demo.vue'
-axios.defaults.baseURL = 'http://localhost:8080';
+// axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = 'http://10.27.133.155:8080';
 
 export default {
   components: {
