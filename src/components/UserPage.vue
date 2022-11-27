@@ -1,10 +1,10 @@
 <template>
     <div>
-        <Demo></Demo>
         <div class="container-xxl">
   <div class="row">
     <div class="col-md-3 col-0 border-end">
       <img class="media-object img-thumbnail rounded-circle w-100 mb-3" :src=userImg>
+      
       <div class="vstack gap-2 w-100">
         <div class="w-100"><h4>{{userName}}</h4></div>
         <button type="button" class="btn btn-outline-secondary">Edit profile</button>
@@ -25,7 +25,7 @@
         <br>
 
 
-        <ul class="nav nav-tabs sticky-top bg-white" id="myTab" role="tablist">
+        <ul class="nav nav-tabs bg-white" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-tab-pane" type="button" role="tab" aria-controls="overview-tab-pane" aria-selected="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 1 16 16">
@@ -214,22 +214,23 @@
 </style>
 
 <script>
-import axios from 'axios';
+import axios from '@/axios';
 import Demo from './Demo.vue'
-axios.defaults.baseURL = 'http://localhost:8080';
-// axios.defaults.baseURL = 'http://10.27.133.155:8080';
+import Avatar from 'vue-avatar'
+import store from '@/store'
 
 export default {
   components: {
     Demo,
+    Avatar
   },
 
   mounted: function() {
     axios.get(this.$route.path).then((response)=>{
     // axios.get(this.$route.path).then((response)=>{
-      this.repoList = response.data.repoList
-      this.userName = response.data.userName
-      this.userImg = response.data.userImg
+      this.repoList = response.repoList
+      this.userName = response.userName
+      this.userImg = response.userImg
     })
   },
 
@@ -249,6 +250,12 @@ export default {
   },
 
   methods: {
+    test: function() {
+      axios.get('/UserPage/'+this.$route.params.userName+'/checkToken').then((response)=>{
+      console.log("-------response------");
+      console.log(response);
+    })
+    },
     enterRepo: function(repoName){ 
       this.$router.push(
         {

@@ -4,7 +4,7 @@ import RepoBrowser from '../components/RepoBrowser.vue'
 import UserPage from '../components/UserPage.vue'
 import VueRouter from 'vue-router'
 import page404 from '../components/404.vue'
-// import login from '../components/login.vue'
+import login from '../components/login.vue'
 
 Vue.use(VueRouter)
 
@@ -29,11 +29,11 @@ const router = new VueRouter({
             component: page404,
             hidden: true
         },
-        // {
-        //     path: '/login', 
-        //     name: "login", 
-        //     component: login
-        // },
+        {
+            path: '/login', 
+            name: "login", 
+            component: login
+        },
     ]
 })
 

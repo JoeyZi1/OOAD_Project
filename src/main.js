@@ -17,23 +17,45 @@ import Vuetify from 'vuetify'
 import vuetify from './plugins/vuetify'
 import store  from "./store";
 
-// router.beforeEach((to, from, next) => {
-//   if (to.name!='login') {
-//     let token = window.sessionStorage.getItem("Token")
-//     console.log(token)
-//     if (token) {
-//       next()
-//     } else {
-//       Vue.prototype.$message({
-//         type: "error",
-//         message: "请先登录"
-//      });
-//       next('/login')
-//     }
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach(async (to, from, next) => {
+    if (to.path ==='/login') next();
+    let token = window.sessionStorage.getItem('TOKEN');
+    console.log("the token is ->");
+    console.log(token);
+    if(token) {
+      // 登录
+      if(to.path === '/login') {
+          // 登陆后访问登录页
+          next({path:from.path});
+      } else {
+          // 登陆后访问非登录页
+          if(store.state.userName === '') {
+              // 当空对象作为判断条件时，相当于true。当空对象与布尔值直接比较时，相当于true，但空数组与布尔值直接比较时是false
+              // 登录后访问非登录页，如果此时用户信息由于页面刷新，store为空需要再次请求后端，拿到用户信息
+              try {
+                  await store.dispatch('getUserInfo');
+                  next();
+              } catch (error) {
+                  // token过期
+                  await store.dispatch('userLogout');
+                  next({path:'/login'});
+              }
+          } else {
+              // 登录后访问非登录页，无刷新操作
+              next();
+          }
+      }
+  } else {
+      // 未登录
+      Vue.prototype.$message({
+          type: "error",
+          message: "请先登录"
+      });
+      next('/login')
+  }
+
+
+})
 
 Vue.directive('highlight', {
   update(el){

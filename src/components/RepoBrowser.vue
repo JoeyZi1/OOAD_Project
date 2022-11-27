@@ -1,10 +1,9 @@
 <template>
 <div>
-<Demo></Demo>
-
 <div class="container-fluid bg-light ps-0 pe-0">
-  <div class="hstack gap-1 align-items-center pt-4 ps-5 pe-5 mb-3" style="height: 40px;">
+  <div class="hstack gap-1 align-items-center pt-4 ps-5 pe-5 mb-4" style="height: 45px;">
     <!-- <button type="button" class="btn btn-primary" @click="test()">test</button> -->
+    
     <svg v-if="true" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
       <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
     </svg>
@@ -682,9 +681,10 @@
 
 <script>
 import Demo from './Demo.vue'
-import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:8080';
+import axios from '@/axios'
+// axios.defaults.baseURL = 'http://localhost:8080';
 // axios.defaults.baseURL = 'http://10.27.133.155:8080';
+
 
 import 'markdown-it-vue/dist/markdown-it-vue.css'
 import content from '../file/README.md'
@@ -693,6 +693,7 @@ import markdown from '../file/README.md'
 import 'highlight.js/styles/github.css'
 // 其他元素使用 github 的样式
 import 'github-markdown-css'
+import Avatar from 'vue-avatar'
 
 
 
@@ -700,7 +701,8 @@ import 'github-markdown-css'
 export default {
   components: {
     Demo,
-    markdown
+    markdown,
+    Avatar,
   },
 
   data: function() {
@@ -813,7 +815,7 @@ export default {
     async deleteBranch(branchname){
         var deleteJudge = 0
         await axios.get("/createBranch/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName ).then((response)=>{
-          branchJudge = response.data
+          branchJudge = response
         })
     },
     enterBranch(branchname){
@@ -835,7 +837,7 @@ export default {
         var newBranchName = this.branchform.name
         var branchJudge = 0
         await axios.get("/createBranch/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/" + newBranchName).then((response)=>{
-          branchJudge = response.data
+          branchJudge = response
         })
         console.log('-------------------------------------------create branch','branchjudge',branchJudge)
         console.log("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/createBranch/" + newBranchName)
@@ -867,7 +869,7 @@ export default {
       console.log('---------------------------------------------rollback', id)
       console.log("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + id + '/Rollback')
       await axios.get("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/" + id + '/Rollback').then((response)=>{
-        this.rollbackJudge = response.data
+        this.rollbackJudge = response
       })
       console.log(this.rollbackJudge)
       if(this.rollbackJudge==1){
@@ -1041,7 +1043,7 @@ export default {
 
       this.$http.post(' http://127.0.0.1:8082/upload', formData, config).then(function (response) {
         if (response.status === 200) {
-          console.log(response.data);
+          console.log(response);
         }
       })
 
@@ -1068,10 +1070,10 @@ export default {
         }
       )
       axios.get(this.$route.path).then((response)=>{
-        this.itemList = response.data.itemList
-        this.branchList = response.data.branchList
-        this.display = response.data.display
-        this.fileContent = response.data.response
+        this.itemList = response.itemList
+        this.branchList = response.branchList
+        this.display = response.display
+        this.fileContent = response.response
       })
     },
 
@@ -1079,15 +1081,15 @@ export default {
 
   created: function() {
     axios.get(this.$route.path).then((response)=>{
-      this.itemList = response.data.itemList
-      this.branchList = response.data.branchList
-      this.display = response.data.display
-      this.fileContent = response.data.response
+      this.itemList = response.itemList
+      this.branchList = response.branchList
+      this.display = response.display
+      this.fileContent = response.response
     })
     console.log("----------------------sdfsghgdhfgh----------------------------");
     console.log('/RepoBrowser/'+ this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/upload');
     axios.get("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/getCommitList').then((response)=>{
-    this.commitList = response.data.commitList
+    this.commitList = response.commitList
     })
 
   },
