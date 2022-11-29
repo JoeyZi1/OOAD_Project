@@ -7,7 +7,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state:{
         userName:'',
-        token: localStorage.getItem('TOKEN') || '',
+        token: '',
     },
     mutations:{
         edit(state, username){
@@ -30,12 +30,10 @@ const store = new Vuex.Store({
                 token = response.Token
             })
             if(judge) {
-                // 存放token，vuex和localStorage各一份
+                // 存放token
                 context.commit('USERLOGIN',token);
-                // localStorage.setItem('TOKEN',token);
+                // localStorage.setItem('Token',token);
                 window.sessionStorage.setItem('Token', token)
-                console.log("store token now->")
-                console.log(window.sessionStorage.getItem('Token'))
 
                 //记录用户信息
                 context.commit('USERNAME', form.account);
@@ -49,11 +47,17 @@ const store = new Vuex.Store({
 
         userLogout(context) {
             return new Promise(resolve => {
-                commit('USERLOGIN', '');
-                // localStorage.removeItem('TOKEN');
+                context.commit('USERLOGIN', '');
+
+                // localStorage.removeItem('Token');
+                // console.log("--------after remove storage-------");
+                // console.log(localStorage.getItem('Token'));
+                // console.log("--------after remove storage-------");
+
                 window.sessionStorage.removeItem('Token');
                 resolve()
             })
+            
         },
 
         getUserInfo() {

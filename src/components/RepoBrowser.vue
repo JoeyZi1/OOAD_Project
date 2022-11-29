@@ -27,17 +27,36 @@
 
 
     <button type="button" class="btn btn-outline-secondary oneLine btn-sm">
-      watch
+      <svg v-if="!haveWatched" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+      </svg>
+      <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill text-primary" viewBox="0 0 16 16">
+        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+      </svg>
+      <span v-if="!haveWatched" class="ms-1">watch</span>
+      <span v-else class="ms-1">unwatch</span>
+      <span v-if="PRNumber > 0" class="badge rounded-pill bg-secondary ms-1">{{repoWatch}}</span>
     </button>  
-    <button type="button" class="btn btn-outline-secondary oneLine btn-sm">
-      folk
+    <button type="button" class="btn btn-outline-secondary oneLine btn-sm" @click="startFork();flush();">
+      fork
     </button>  
-    <button type="button" class="btn btn-outline-secondary oneLine btn-sm">
-      star
+    <button type="button" class="btn btn-outline-secondary oneLine btn-sm" @click="clickStar()">
+      <svg v-if="!haveStared" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+        <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+      </svg>
+      <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill text-warning" viewBox="0 0 16 16">
+        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+      </svg>
+      <span v-if="!haveStared" class="ms-1">star</span>
+      <span v-else class="ms-1">unstar</span>
+      <span v-if="PRNumber > 0" class="badge rounded-pill bg-secondary ms-1">{{repoStar}}</span>
+
     </button>   
   </div>
 
-  <ul class="nav nav-tabs sticky-top ps-4" id="myTab" role="tablist">
+  <ul class="nav nav-tabs ps-4" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-tab-pane" type="button" role="tab" aria-controls="overview-tab-pane" aria-selected="true">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code-slash" viewBox="0 2 16 16">
@@ -124,17 +143,36 @@
             </el-breadcrumn-item>
           </el-breadcrumb>
 
+          <button type="button" class="btn btn-outline-secondary" @click="deleteBranch()">
+              delete branch
+          </button>
+
+          <el-dialog title="Delete branch" :visible.sync="deleteBranchFormVisible" @close="this.deleteBranchform.branch=''" width="500px">
+            <el-form ref="deleteBranchform" :model="deleteBranchform"  label-width=auto style="align:center" :rules='deleteBranchRules' >
+              <el-form-item label="Branch Name" prop="branch">
+                <el-select v-model="deleteBranchform.branch" placeholder="Please Choose branch to delete">
+                  <el-option v-for="branch in branchList" :key="branch.label" :label ="branch.branchName" :value="branch.branchName" ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitDeleteBranchForm('deleteBranchform')">Submit</el-button>
+                <el-button type="danger" @click=" deleteBranchFormVisible = false; this.deleteBranchform.branch=''">Cancel</el-button>
+              </el-form-item>
+            </el-form>
+          </el-dialog>
+
+
           <button type="button" class="btn btn-outline-secondary" @click="createBranch()">
               create new branch
           </button>
           <el-dialog title="Create new branch" :visible.sync="branchFormVisible" @close="onClose">
-            <el-form ref="branchform" :model="branchform"  label-width="120px" style="align:center" >
-              <el-form-item label="Branch Name">
+            <el-form ref="branchform" :model="branchform"  label-width="120px" style="align:center" :rules='branchRules'>
+              <el-form-item label="Branch Name" prop="name">
                 <el-input v-model="branchform.name"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="submitBranchForm('branchform')">Submit</el-button>
-                <el-button type="danger" @click=" branchFormVisible = false">Cancel</el-button>
+                <el-button type="danger" @click=" branchFormVisible = false; this.branchform.name=''">Cancel</el-button>
               </el-form-item>
             </el-form>
           </el-dialog>
@@ -163,7 +201,7 @@
                       <!-- <input type="file" class="form-control mb-2" webkitdirectory directory multiple/> -->
                       <form enctype="multipart/form-data">
                           <input class="form-control mb-2" type="file" @change="getFile($event)">
-                          <button type="button" class="btn btn-primary"  @click="submitForm($event)" data-bs-dismiss="modal">提交</button>
+                          <button type="button" class="btn btn-primary"  @click="submitForm($event);flush();" data-bs-dismiss="modal">提交</button>
                       </form>
                   </div>
                 </div>
@@ -181,13 +219,24 @@
                   <h5 class="modal-title" id="staticBackdropLabel">Upload folder</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
-                  <div class="row mx-3">
+                  
+
+
+                <form :action="uploadURL" enctype="multipart/form-data" method="post" target="targetIfr">
+                    <input class="form-control" id="dir" type="file" name="file" webkitdirectory mozdirectory/>
+                    <input class="btn btn-primary mt-1" @click="flush()" id="uploadDir" type="submit" value="提交文件夹" data-bs-dismiss="modal">
+                </form>  
+                <iframe name="targetIfr" style="display:none"></iframe>
+
+
+                  <!-- <div class="row mx-3">
                       <form enctype="multipart/form-data">
-                          <input class="form-control mb-2" type="file" @change="getFile($event)" webkitdirectory>
+                          <input class="form-control mb-2" type="file" @change="getFile($event)" webkitdirectory mozdirectory>
                           <button type="button" class="btn btn-primary"  @click="submitForm($event)" data-bs-dismiss="modal">提交</button>
                       </form>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -202,7 +251,7 @@
               Code
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Download</a></li>
+              <li><a class="dropdown-item" @click="codeDownload()">Download</a></li>
             </ul>
           </div>
         </div>
@@ -219,7 +268,6 @@
                 </span>
               </li>
             </ul>
-
           </div>
         </div>
 
@@ -249,7 +297,7 @@
         
 
         <div class="card" v-if="this.$route.params.queryPath===root" style="width: 100%;">
-          <div class="card-header text-start bg-white sticky-top" style="font-weight: bolder;">
+          <div class="card-header text-start bg-white" style="font-weight: bolder;">
             README.md
           </div>
           <div class="card-body">
@@ -262,7 +310,7 @@
         </div>
 
         <div class="card" v-else style="width: 100%;">
-          <div class="card-header text-start bg-light sticky-top" style="font-weight: bolder;">
+          <div class="card-header text-start bg-light" style="font-weight: bolder;">
             file content
           </div>
           <div class="card-body">
@@ -288,7 +336,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star me-1" viewBox="0 1 16 16">
                 <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
               </svg>
-              <span style="margin-right: 2px">0</span>stars
+              <span style="margin-right: 2px">{{repoStar}}</span>stars
             </el-link>
           </div>
           
@@ -327,36 +375,17 @@
         <div class="mb-3 border-bottom">
           <h5>Contributer</h5>
 
-          <div class="mb-3">
-            <div class="hstack me-3">
-              <div>
-                <v-avatar size="36px">
-                  <img alt="Avatar" src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460">
-                  <!-- <v-icon
-                    :color="message.color"
-                    v-text="message.icon"
-                  ></v-icon> -->
-                </v-avatar>
+          <div v-for="contributer in contributerList" :key="contributer.id">
+            <div class="mb-3">
+              <div class="hstack me-3">
+                <div>
+                  <Avatar :username="contributer.name" color="#fff" :background-color="extractColorByName(contributer.name)" :size=35>
+                  </Avatar>
+                </div>
+                <div class="ms-3">{{contributer.name}}</div>
               </div>
-              <div class="ms-3">Contributer1</div>
             </div>
           </div>
-
-          <div class="mb-3">
-            <div class="hstack me-3">
-              <div>
-                <v-avatar size="36px">
-                  <img alt="Avatar" src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460">
-                  <!-- <v-icon
-                    :color="message.color"
-                    v-text="message.icon"
-                  ></v-icon> -->
-                </v-avatar>
-              </div>
-              <div class="ms-3">Contributer2</div>
-            </div>
-          </div>
-          
           
         </div>
         
@@ -482,8 +511,8 @@
               <v-timeline align-top=true dense=true>
                 <v-timeline-item v-for="entry in item.issueContent" :key="entry.id">
                   <template v-slot:icon>
-                    <v-avatar >
-                      <img src="http://i.pravatar.cc/64">
+                    <v-avatar color="orange" size="48">
+                      <span class="white--text headline">{{entry.user.slice(0,2)}}</span>
                     </v-avatar>
                   </template>
                   <v-card class="elevation-2">
@@ -521,6 +550,79 @@
 
 
 
+  <!-- setting -->
+  <div class="tab-pane fade" id="star-tab-pane" role="tabpanel" aria-labelledby="star-tab" tabindex="0">
+    <div class="hstack mt-3 mb-3">
+      <div class="btn btn-outline-danger" @click="deleteRepo();flushAndJump();">Delete this repository</div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="hstack mt-3 mb-3">
+          <h4>Change repository visibility</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        Contributers
+      </div>
+    </div>
+
+    <div class="hstack mt-3 mb-3">
+      <h4>Manage contributers</h4>
+      <div type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#modal_add_contributer">add poeple</div>
+
+
+      <!-- Modal -->
+      <div class="modal fade" id="modal_add_contributer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Add contributer</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row mx-3">
+                <div class="input-group mt-3 mb-3">
+                  <span class="input-group-text" id="basic-addon1">User</span>
+                  <input type="text" v-model="addContributerPane" class="form-control" placeholder="Enter user name" >
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="inviteContributer()">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+    <div class="card">
+      <div class="card-header">
+        Contributers
+      </div>
+      <ul class="list-group list-group-flush" v-for="contributer in contributerList" :key="contributer.id">
+        <li class="list-group-item">
+          <div class="hstack me-3 ">
+            <div>
+              <Avatar :username="contributer.name" color="#fff" :background-color="extractColorByName(contributer.name)" :size=35>
+              </Avatar>
+            </div>
+            <div class="ms-3">{{contributer.name}}</div>
+            <div type="button" class="btn btn-outline-danger btn-sm ms-auto" @click="deleteContributer(contributer.name)">remove</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+
+  </div>
+  <!-- setting -->
+
+  <!-- PR -->
   <div class="pr-pane fade" id="pr-tab-pane" role="tabpanel" aria-labelledby="pr-tab" tabindex="0">
     <div class="hstack gap-3 border-bottom resetPadding mb-3">
           <input class="form-control me-auto" type="text" placeholder="Find an issue..." aria-label="Find an issue..." @keyup.enter="submit">
@@ -537,93 +639,101 @@
 
 
           <div class="vr"></div>
-          <button type="button"  class="btn btn-success oneLine" data-bs-toggle="modal" data-bs-target="#modal_new_pr">
-              New pull request
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#newPRDashboard">
+            New PR
           </button>
+   </div>
 
+    
+      <div class="collapse" id="newPRDashboard">
+        <h5 id="staticBackdropLabel">New pull request</h5>
+       
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Pull request title</span>
+          <input v-model="PRTitleInput" type="text" class="form-control" placeholder="Enter a pull request title" >
+        </div>
+                
+        <div class="hstack mb-3">
+          <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-git-compare range-editor-icon me-2">
+              <path fill-rule="evenodd" d="M9.573.677L7.177 3.073a.25.25 0 000 .354l2.396 2.396A.25.25 0 0010 5.646V4h1a1 1 0 011 1v5.628a2.251 2.251 0 101.5 0V5A2.5 2.5 0 0011 2.5h-1V.854a.25.25 0 00-.427-.177zM6 12v-1.646a.25.25 0 01.427-.177l2.396 2.396a.25.25 0 010 .354l-2.396 2.396A.25.25 0 016 15.146V13.5H5A2.5 2.5 0 012.5 11V5.372a2.25 2.25 0 111.5 0V11a1 1 0 001 1h1zm6.75 0a.75.75 0 100 1.5.75.75 0 000-1.5zM4 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"></path>
+          </svg>
 
-          <!-- Modal -->
-          <div class="modal fade" id="modal_new_pr" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="staticBackdropLabel">New pull request</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Pull request title</span>
-                    <input type="text" class="form-control" placeholder="Enter a pull request title" >
-                  </div>
-                  
-                  <div class="card">
-                    <div class="card-header text-start ps-3">
-                      <div class="hstack">
-                        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-git-compare range-editor-icon me-2">
-                            <path fill-rule="evenodd" d="M9.573.677L7.177 3.073a.25.25 0 000 .354l2.396 2.396A.25.25 0 0010 5.646V4h1a1 1 0 011 1v5.628a2.251 2.251 0 101.5 0V5A2.5 2.5 0 0011 2.5h-1V.854a.25.25 0 00-.427-.177zM6 12v-1.646a.25.25 0 01.427-.177l2.396 2.396a.25.25 0 010 .354l-2.396 2.396A.25.25 0 016 15.146V13.5H5A2.5 2.5 0 012.5 11V5.372a2.25 2.25 0 111.5 0V11a1 1 0 001 1h1zm6.75 0a.75.75 0 100 1.5.75.75 0 000-1.5zM4 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"></path>
-                        </svg>
+          <div class="me-1" style="font-weight: bolder;">Base:</div>
 
-                        <div class="dropdown me-1">
-                          <a class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{this.targetUser}}/{{this.$route.params.repoParam}}
-                          </a>
+          <div class="dropdown me-1">
+            <a class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+              {{this.targetUser}}
+            </a>
+            <span class="ms-1 me-1" style="font-weight: bolder;">/</span>
 
-                          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li>
-                              <a class="dropdown-item" @click="shiftPRtarget($route.params.userName)">{{this.$route.params.userName}}</a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item" @click="shiftPRtarget(forkedUser)">{{this.forkedUser}}</a>
-                            </li>
-                          </ul>
-                        </div>
+            <a class="btn btn-outline-secondary" role="button">
+              {{this.$route.params.repoParam}}
+            </a>
 
-                        <div class="me-1">:</div>
-
-                        <div class="dropdown">
-                          <a class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            Base:
-                            {{this.baseBrach}}
-                          </a>
-
-                          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li v-for="branch in branchList" :key="branch.id">
-                              <a class="dropdown-item" @click="shiftBaseBranch(branch.branchName)">{{branch.branchName}}</a>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-arrow-left ms-2 me-2">
-                            <path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path>
-                        </svg>
-
-                        <div class="dropdown">
-                          <a class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            Compare:
-                            {{this.compareBranch}}
-                          </a>
-
-                          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li v-for="branch in branchList" :key="branch.id">
-                              <a class="dropdown-item" @click="shiftCompareBranch(branch.branchName)">{{branch.branchName}}</a>
-                            </li>
-                          </ul>
-                        </div>
-                     </div>
-                    </div>
-                    
-                  </div>
-
-
-
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addIssue()">Add</button>
-                </div>
-              </div>
-            </div>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
+                <a class="dropdown-item" @click="shiftPRtarget($route.params.userName)">{{this.$route.params.userName}}</a>
+              </li>
+              <li>
+                <a class="dropdown-item" @click="shiftPRtarget(forkedUser)">{{this.forkedUser}}</a>
+              </li>
+            </ul>
           </div>
-    </div>
+
+          <div class="me-1" style="font-weight: bolder;">:</div>
+
+          <div class="dropdown">
+            <a class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+              {{this.baseBrach}}
+            </a>
+
+            <ul  v-if="targetUser===$route.params.userName" class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li v-for="branch in branchList" :key="branch.id">
+                <a class="dropdown-item" @click="shiftBaseBranch(branch.branchName)">{{branch.branchName}}</a>
+              </li>
+            </ul>
+
+            <ul  v-else class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li v-for="branch in targetBranchList" :key="branch.id">
+                <a class="dropdown-item" @click="shiftBaseBranch(branch.branchName)">{{branch.branchName}}</a>
+              </li>
+            </ul>
+
+
+          </div>
+
+          <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-arrow-left ms-2 me-2">
+              <path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path>
+          </svg>
+
+          <div class="me-1" style="font-weight: bolder;">Compare:</div>
+          <a class="btn btn-outline-secondary" role="button">
+            {{this.$route.params.userName}}
+          </a>
+          <span class="ms-1 me-1" style="font-weight: bolder;">/</span>
+          <a class="btn btn-outline-secondary" role="button">
+            {{this.$route.params.repoParam}}
+          </a>
+          <div class="me-1" style="font-weight: bolder;">:</div>
+          <div class="dropdown">
+            <a class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+              {{this.compareBranch}}
+            </a>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li v-for="branch in branchList" :key="branch.id">
+                <a class="dropdown-item" @click="shiftCompareBranch(branch.branchName)">{{branch.branchName}}</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="btn btn-primary ms-auto" @click="addPR($route.params.repoParam)"> add </div>
+        </div>
+             
+      </div>
+
+  
+
 
     <div class="card mb-4" style="width: 100%;">
       <div class="card-header text-start ps-3 pt-2 pb-2">
@@ -644,8 +754,36 @@
             </div>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <button type="button" v-if="item.status===PRopen" class="btn btn-success me-3">Confirm merge</button>
-            <button type="button" v-if="item.status===PRopen" class="btn btn-danger">Cancel</button>
+            <div class="hstack mb-3">
+              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-git-compare range-editor-icon me-2">
+                  <path fill-rule="evenodd" d="M9.573.677L7.177 3.073a.25.25 0 000 .354l2.396 2.396A.25.25 0 0010 5.646V4h1a1 1 0 011 1v5.628a2.251 2.251 0 101.5 0V5A2.5 2.5 0 0011 2.5h-1V.854a.25.25 0 00-.427-.177zM6 12v-1.646a.25.25 0 01.427-.177l2.396 2.396a.25.25 0 010 .354l-2.396 2.396A.25.25 0 016 15.146V13.5H5A2.5 2.5 0 012.5 11V5.372a2.25 2.25 0 111.5 0V11a1 1 0 001 1h1zm6.75 0a.75.75 0 100 1.5.75.75 0 000-1.5zM4 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"></path>
+              </svg>
+  
+              <span class="badge bg-secondary me-1">
+                {{item.target}}
+              </span>
+              <span class="me-1" style="font-weight: bolder;">/</span>
+              <span class="badge bg-secondary me-1">{{item.targetRepo}}</span>
+              <span class="me-1" style="font-weight: bolder;">:</span>
+              <span class="badge bg-secondary me-1">{{item.targetBranch}}</span>
+
+              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-arrow-left ms-2 me-2">
+                  <path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path>
+              </svg>
+
+              <span class="badge bg-secondary me-1">
+                {{item.from}}
+              </span>
+              <span class="me-1" style="font-weight: bolder;">/</span>
+              <span class="badge bg-secondary me-1">{{item.fromRepo}}</span>
+              <span class="me-1" style="font-weight: bolder;">:</span>
+              <span class="badge bg-secondary me-1">{{item.fromBranch}}</span>
+
+              
+            </div>
+            
+            <button type="button" v-if="item.status===PRopen" class="btn btn-success btn-sm me-3" @click="acptPR(item.targetRepo,item.target,item.targetBranch,item.from,item.fromBranch,item.PrId)">Confirm merge</button>
+            <button type="button" v-if="item.status===PRopen" class="btn btn-danger btn-sm" @click="rejPR(item.targetRepo,item.target,item.targetBranch,item.from,item.fromBranch,item.PrId)">Cancel</button>
 
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -653,12 +791,7 @@
     </div>
       
   </div>
-
-
-  <div class="tab-pane fade" id="star-tab-pane" role="tabpanel" aria-labelledby="star-tab" tabindex="0">
-      Setting
-  </div>
-
+  <!-- PR -->
 
 
 
@@ -675,6 +808,10 @@
     {{ new Date().getFullYear() }} — <strong>CS309 Project</strong>
   </v-col>
 </v-footer>
+
+<v-overlay absolute="true" :value="overlay">
+  <v-progress-circular indeterminate size="64"></v-progress-circular>
+</v-overlay>
 
 </div>
 </template>
@@ -694,6 +831,11 @@ import 'highlight.js/styles/github.css'
 // 其他元素使用 github 的样式
 import 'github-markdown-css'
 import Avatar from 'vue-avatar'
+import store from '@/store'
+
+import nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
+nprogress.configure({ showSpinner: false });
 
 
 
@@ -707,15 +849,36 @@ export default {
 
   data: function() {
     return {
-      content,
-      codeFile: "int a;\n\tint main(){\\tint a = 1;\n\ta += 1;\n\t}",
+      downloadURL: 'http://10.27.133.155:8080'+'/RepoBrowser/' + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' + this.$route.params.branchName+"/download",
+      overlay: false,
+      uploadURL: 'http://10.27.133.155:8080'+this.$route.path+ '/upload',
 
-      file: '',
+      root: "root",
+      itemType_folder: "folder",
+      itemType_file: "file",
+      pageType_list: "list",
+      pageType_file: "file",
 
-
-      commitList:[
-        
+      deleteBranchform:{branch:''},
+      deleteBranchFormVisible:false,
+      
+      deleteBranchRules:{
+        branch: [{ required: true, message: "Please choose the branch!", trigger: "blur" }],
+      },
+      branchRules: {
+        name: [{ required: true, message: "Please enter the branch name!", trigger: "blur" }],
+      },
+      markdownvalue:'<h3><a href=\"#jgit-\" name=\"jgit-\"></a>Jgit:</h3>\n<p>fasd</p>\n<p>ffasdf</p>\n<h4><a href=\"#1234q5afsd\" name=\"1234q5afsd\"></a>1234q5afsd</h4>\n<p>###### </p>\n<p>fasdf</p>\n<p>a</p>\n<h5><a href=\"#s1f\" name=\"s1f\"></a>s1f</h5>',
+  
+      setitems: [
+        { title: 'Dashboard', icon: 'dashboard' },
+        { title: 'Account', icon: 'account_box' },
+        { title: 'Admin', icon: 'gavel' },
       ],
+      content,
+      codeFile: "\n#!/usr/bin/python\n# -*- coding: UTF-8 -*-\n\nimport socket# 客户端 发送一个数据，再接收一个数据\nclient = socket.socket(socket.AF_INET,socket.SOCK_STREAM) #声明socket类型，同时生成链接对象\nclient.connect(('localhost',6999)) #建立一个链接，连接到本地的6969端口\nwhile True:\n    # addr = client.accept()\n    # print '连接地址：', addr\n    msg = '欢迎访问菜鸟教程！'  #strip默认取出字符串的头尾空格\n    client.send(msg.encode('utf-8'))  #发送一条信息 python3 只接收btye流\n    data = client.recv(1024) #接收一个信息，并指定接收的大小 为1024字节\n    print('recv:',data.decode()) #输出我接收的信息\n    client.close()\n\n",
+      file: [],
+      commitList:[],
       rollbackJudge:0,
       branchform:{name:''},
       branchFormVisible:false,
@@ -729,23 +892,18 @@ export default {
       baseBrach: '--',
       compareBranch: '--',
       targetUser: '--',
-      forkedUser: 'none',
+      forkedUser: '--',
       PRshow: 'open',
       PRopen: 'open',
       PRclosed: 'closed',
       PRList: [
-        {PRTitle: "Merge a brach", status:"open", target: "JoeyZi1", targetBranch: 'master', from: 'JoeyZi1', fromBranch: 'dev'},
-        {PRTitle: "Merge a brach", status:"open", target: "JoeyZi1", targetBranch: 'master', from: 'JoeyZi1', fromBranch: 'public'},
-        {PRTitle: "Merge a brach", status:"closed", target: "JoeyZi1", targetBranch: 'master', from: 'JoeyZi1', fromBranch: 'dev'},
+        {PrId: 100,PRTitle: "Merge a brach", status:"open", result: "", target: "User_A", targetRepo: 'demo', targetBranch: 'master', from: 'User_A', fromRepo: 'demo', fromBranch: 'dev'},
       ],
+      targetBranchList: [],
+      PRTitleInput: 'defaultTitle',
 
 
-
-      root: "root",
-      itemType_folder: "folder",
-      itemType_file: "file",
-      pageType_list: "list",
-      pageType_file: "file",
+      
 
 
       branchList: [
@@ -757,15 +915,28 @@ export default {
 
       itemList: [
         // {type: "folder", itemName: "src", msg: "updated 2 days ago"},
-        // {type: "folder", itemName: "bin", msg: "updated 2 days ago"},
-        // {type: "folder", itemName: ".idea", msg: "updated 2 days ago"},
-        // {type: "file", itemName: "README.md", msg: "updated 2 days ago"},
       ],
+
       display: "list",
       fileContent: "jlasfalfaslfslgjsaasfs",
 
+      //repo info
+      contributerList: [{name: 'test1'}, {name: 'test2'}],
+      repoStar: '',
+      repoFork: -1,
+      repoWatch: -1,
+      haveStared: false,
+      haveForked: false,
+      haveWatched: true,
 
 
+      //setting
+      addContributerPane: '',
+
+
+
+
+      //issue part
       issueOpen: "open",
       issueClosed: "closed",
       issueShow: "open",
@@ -798,6 +969,208 @@ export default {
   },
 
   methods: {
+    deleteRepo() {
+       axios.get('/Repository/delete/'+this.$route.params.userName+'/'+this.$route.params.repoParam).then((response)=>{
+        this.$message({
+          type: 'success',
+          message: '仓库删除!'
+        })
+      })
+
+    },
+
+    startFork() {
+      axios.get('/PR/fork/'+store.state.userName+'/'+this.$route.params.repoParam+'/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+'master').then((response)=>{
+        this.$message({
+          type: 'success',
+          message: 'merge发送!'
+        })
+      })
+    },
+
+    codeDownload() {
+      window.open(this.downloadURL, '_blank');
+    },
+
+    testt(){
+      console.log(this.uploadURL)
+    },
+    flush() {
+      console.log('开始等待');
+      nprogress.start();
+      this.overlay = true;
+      setTimeout(() => {
+        console.log('刷新');
+        nprogress.done();
+        this.overlay = false;
+        this.$router.push(
+        {
+          URL:this.$route.path,
+          query: {
+            path: +new Date() //保证每次点击路由的query项都是不一样的，确保会重新刷新view
+          }
+        })
+      }, 1250);
+    },
+    flushAndJump() {
+      console.log('开始等待');
+      nprogress.start();
+      this.overlay = true;
+      setTimeout(() => {
+        console.log('刷新');
+        nprogress.done();
+        this.overlay = false;
+        this.$router.push(
+        {
+            name: "UserPage",
+            params:{
+              userName: this.$route.params.userName,
+            },
+          }
+        )
+      }, 750);
+    },
+    async clickStar() {
+      if (this.haveStared) { //remove star
+        // this.haveStared = !this.haveStared
+        await axios.get('/star/delete/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+store.state.userName).then((response)=>{
+          this.$message({
+            type: 'success',
+            message: 'remove star!'
+          })
+        })
+        console.log(this.$route.path)
+        this.$router.push(
+        {
+          URL:this.$route.path,
+          query: {
+            path: +new Date() //保证每次点击路由的query项都是不一样的，确保会重新刷新view
+          }
+        })
+
+      } else { //add star
+        // this.haveStared = !this.haveStared
+        await axios.get('/star/add/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+store.state.userName).then((response)=>{
+          this.$message({
+            type: 'success',
+            message: 'star this repo!'
+          })
+        })
+        console.log(this.$route.path)
+        this.$router.push(
+        {
+          URL:this.$route.path,
+          query: {
+            path: +new Date() //保证每次点击路由的query项都是不一样的，确保会重新刷新view
+          }
+        })
+      }
+    },
+
+    addPR(repo) {
+      console.log('add PR')
+      axios.get('/PR/Request/'+this.targetUser+'/'+repo+'/'+this.baseBrach+'/'+this.$route.params.userName+'/'+repo+'/'+this.compareBranch+'/'+this.PRTitleInput).then((response)=>{
+        this.$message({
+          type: 'success',
+          message: 'add PR!',
+        })
+      })
+      this.PRTitleInput = 'defaultTitle'
+      this.flush()
+    },
+
+    acptPR(repo,tar,tarBranch,from,fromBranch,id) {
+      axios.get('/PR/merge/'+tar+'/'+repo+'/'+tarBranch+'/'+from+'/'+repo+'/'+fromBranch+'/'+id).then((response)=>{
+        this.$message({
+          type: 'success',
+          message: 'accept merge!'
+        })
+      })
+      this.flush()
+    },
+
+    rejPR(repo,tar,tarBranch,from,fromBranch,id) {
+      axios.get('/PR/rejectMerge/'+tar+'/'+repo+'/'+tarBranch+'/'+from+'/'+repo+'/'+fromBranch+'/'+id).then((response)=>{
+        this.$message({
+          type: 'success',
+          message: 'reject merge!'
+        })
+      })
+      this.flush()
+    },
+
+    
+    inviteContributer() {
+      var cont = this.addContributerPane;
+      this.addContributerPane = '';
+      axios.get("/RepoBrowser/AddContributer/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  cont).then((response)=>{
+        this.$message({
+          type: 'success',
+          message: 'add user!'
+        })
+      })
+      this.flush()
+    },
+
+    deleteContributer(name) {
+      axios.get("/RepoBrowser/removeContributer/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  name).then((response)=>{
+        this.$message({
+          type: 'success',
+          message: 'remove user!'
+        })
+      })
+      this.flush()
+    },
+
+
+    extractColorByName(name) {
+      var temp = [];
+      temp.push("#");
+      for (let index = 0; index < name.length; index++) {
+        temp.push(parseInt(name[index].charCodeAt(0), 10).toString(16));
+      }
+      return temp.slice(0, 5).join('').slice(0, 4);
+    },
+    
+    submitDeleteBranchForm(formName){
+      this.$refs[formName].validate(async (valid) => {
+          if(valid){
+            var deletejudge =0
+            this.deleteBranchFormVisible = false
+            console.log("/Branch/delete/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/" + this.deleteBranchform.branch)
+            await axios.get("/Branch/deleteForce/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' + this.deleteBranchform.branch).then((response)=>{
+            deletejudge = response
+            })
+            if(deletejudge == 1){
+              this.$router.push({
+                name: "RepoBrowser",
+                params:{
+                  userName: this.$route.params.userName,
+                  repoParam: this.$route.params.repoParam,
+                  branchName: this.$route.params.branchName,
+                  queryPath: "root"
+                },
+                query: {
+                  path: +new Date() 
+                }
+              })
+            
+            } else{
+              alert('Delete failed!')
+            }
+          }
+      })
+    },
+
+    deleteBranch(){
+      this.deleteBranchFormVisible = true
+      this.deleteBranchform.branch = ''
+      console.log('------------------------------------this is delete')
+    },
+    onClose() {
+      this.branchform.name=''
+    },
+
     //pr part
     shiftPRtarget: function(b){
       console.log(b);
@@ -810,14 +1183,20 @@ export default {
 
     shiftCompareBranch: function(b) {
       this.compareBranch = b;
+      axios.get('/PR/getTargetInfo/'+this.$route.params.userName + '/'+this.$route.params.repoParam + '/' + b).then((response)=>{
+        this.$message({
+          type: 'success',
+          message: 'change branch!'
+        })
+        this.forkedUser = response.targetAgentName
+        console.log()
+        this.targetBranchList = response.targetBranch
+        
+      })
+
     },
 
-    async deleteBranch(branchname){
-        var deleteJudge = 0
-        await axios.get("/createBranch/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName ).then((response)=>{
-          branchJudge = response
-        })
-    },
+   
     enterBranch(branchname){
       this.$router.push({
           name: "RepoBrowser",
@@ -833,38 +1212,46 @@ export default {
         }
       )
     },
-    async submitBranchForm(){
-        var newBranchName = this.branchform.name
-        var branchJudge = 0
-        await axios.get("/createBranch/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/" + newBranchName).then((response)=>{
-          branchJudge = response
-        })
-        console.log('-------------------------------------------create branch','branchjudge',branchJudge)
-        console.log("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/createBranch/" + newBranchName)
-        this.branchFormVisible = false
-        if (branchJudge==0){
-          alert('Create failed.');
-        } else{
-          this.branchList.push(newBranchName)
-          this.$router.push({
-              name: "RepoBrowser",
-              params:{
-                userName: this.$router.params.userName,
-                repoParam: this.$router.params.repoParam,
-                branchName: newBranchName,
-                queryPath: "root"
-              },
-              query: {
-                path: +new Date() 
-              }
+
+    submitBranchForm(formName){
+      this.$refs[formName].validate(async (valid) => {
+        console.log(valid)
+        if(valid){
+          this.branchFormVisible=false
+          var newBranchName = this.branchform.name
+          var branchJudge = 0
+          await axios.get("/Branch/create/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/" + newBranchName).then((response)=>{
+            branchJudge = response
+          })
+          console.log('-------------------------------------------create branch','branchjudge',branchJudge)
+          console.log("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + "/createBranch/" + newBranchName)
+          this.branchFormVisible = false
+          if (branchJudge==0){
+            alert('Create failed.');
+          } else{
+            this.branchList.push(newBranchName)
+            this.$router.push({
+                name: "RepoBrowser",
+                params:{
+                  userName: this.$route.params.userName,
+                  repoParam: this.$route.params.repoParam,
+                  branchName: newBranchName,
+                  queryPath: "root"
+                },
+                query: {
+                  path: +new Date() 
+                }
+              })
             }
-          )
-       
-        }
-    },
+          }
+        })
+      },
+
     createBranch(){
         this.branchFormVisible = true  
+        this.branchform.name=''
     },
+
     async rollback(id){
       console.log('---------------------------------------------rollback', id)
       console.log("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + id + '/Rollback')
@@ -909,7 +1296,6 @@ export default {
         //   });
       }
     },
-
 
     addComment: function(name) {
       var index = this.issueList.findIndex(issue => {
@@ -1018,7 +1404,6 @@ export default {
 
     getFile: function(event) {
       this.file = event.target.files[0];
-      console.log(this.file);
     },
 
     submitForm: function(event) {
@@ -1034,21 +1419,17 @@ export default {
       let config = {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'UserName': this.getUserName,
-          'RepoName': this.getRepoName,
-          'BranchName': this.getBranchName,
-          'FilePath': this.getFilePath
-        }
+        },
+       
       }
 
-      this.$http.post(' http://127.0.0.1:8082/upload', formData, config).then(function (response) {
+      axios.post(this.$route.path+'/upload', formData, config).then(function (response) {
         if (response.status === 200) {
           console.log(response);
         }
       })
 
     },
-
 
     changeBranch: function(branch){
       var user = this.$route.params.userName
@@ -1081,13 +1462,16 @@ export default {
 
   created: function() {
     axios.get(this.$route.path).then((response)=>{
+      console.log(response)
       this.itemList = response.itemList
       this.branchList = response.branchList
       this.display = response.display
       this.fileContent = response.response
+      this.haveStared = response.canStar
+      this.repoStar = response.Star
+      this.PRList = response.PRList
+      this.contributerList = response.contributorsList
     })
-    console.log("----------------------sdfsghgdhfgh----------------------------");
-    console.log('/RepoBrowser/'+ this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/upload');
     axios.get("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/getCommitList').then((response)=>{
     this.commitList = response.commitList
     })
@@ -1196,7 +1580,7 @@ pre {
   font-size: 0.75rem;
   font-family: Menlo, Monaco, Consolas, Courier, monospace;
   line-height: 1.5;
-  white-space: pre-wrap;
+  white-space:unset;
   border: 0;
   text-align: start;
 }
@@ -1209,7 +1593,7 @@ pre {
   /* padding: 5px; */
   /* padding-left: 10px; */
   color: #131414;
-  white-space:pre-line;
+  white-space:unset;
   /* list-style: decimal-leading-zero; */
   list-style-position: outside;
   border-left: 1px solid white(180 98% 1%);

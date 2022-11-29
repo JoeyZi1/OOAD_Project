@@ -45,7 +45,23 @@ let joey_userpage = Mock.mock({
     "repoList": [{
         "repoName": "OOAD_Project",
         "permission": "public",
-        "msg": "updated 1 days ago"
+        "msg": "updated 1 days ago",
+        "star": 2,
+        "fork": 1,
+        },
+        {
+        "repoName": "Demo",
+        "permission": "public",
+        "msg": "updated 1 days ago",
+        "star": 1,
+        "fork": 0,
+        },
+        {
+        "repoName": "Test",
+        "permission": "public",
+        "msg": "updated 1 days ago",
+        "star": 0,
+        "fork": 1,
         },
 
     ],
@@ -155,25 +171,25 @@ let joey_repo_components = Mock.mock({
 })
 
 
-Mock.mock('http://localhost:8080/UserPage/JoeyZi1', () => {
-    return joey_userpage
-})
-Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root_src_components', () => {
-    return joey_repo_components
-})
-Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root_src_mock', () => {
-    return joey_repo_mock
-})
-Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root_src', () => {
-    return joey_repo_src
-})
-Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root_public', () => {
-    return joey_repo_public
-})
-Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root', () => {
-    console.log("mock info")
-    return joey_repo_root
-})
+// Mock.mock('http://localhost:8080/UserPage/JoeyZi1', () => {
+//     return joey_userpage
+// })
+// Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root_src_components', () => {
+//     return joey_repo_components
+// })
+// Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root_src_mock', () => {
+//     return joey_repo_mock
+// })
+// Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root_src', () => {
+//     return joey_repo_src
+// })
+// Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root_public', () => {
+//     return joey_repo_public
+// })
+// Mock.mock('http://localhost:8080/RepoBrowser/JoeyZi1/OOAD_Project/master/root', () => {
+//     console.log("mock info")
+//     return joey_repo_root
+// })
 
 // Mock.mock('http://10.27.133.155:8080/UserPage/JoeyZi1', () => {
 //     return joey_userpage

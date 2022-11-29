@@ -52,6 +52,7 @@
       </div>
     </div>
     </div>
+
   </template>
   <script>
   import axios from '@/axios'
@@ -82,7 +83,10 @@
               judge = await this.$store.dispatch('userLogin',this.loginForm);
 
               if(judge){
-                alert('Sign in suceessfully!')
+                this.$message({
+                  type: 'success',
+                  message: '登陆成功!'
+                })
                 this.$router.push({
                   name: "UserPage",
                   params:{

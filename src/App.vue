@@ -20,9 +20,11 @@
             <button class="btn btn-outline-success text-light" type="submit">Search</button>
           </form>
 
-          <Avatar class="btn btn-outline " :username="userName" color="#fff" :background-color="extractColorByName(userName)" size=35 id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+
+          
+          <Avatar v-if="userName" class="btn btn-outline " :username="userName" color="#fff" :background-color="extractColorByName(userName)" :size=35 id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
           </Avatar>
-          <div class="dropdown" style="transform: translate(-175px, 19px)">
+          <div v-if="userName" class="dropdown" style="transform: translate(-175px, 19px)">
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li><a class="dropdown-item" @click="gotoUser()">
                 Signed in as
@@ -32,6 +34,7 @@
               <li><a class="dropdown-item" @click="logout()">Sign out</a></li>
             </ul>
           </div>
+          <button v-else class="btn btn-outline-primary text-light" @click="gotoLogin()">Log in</button>
           
         </div>
       </div>
@@ -72,7 +75,6 @@ export default {
     },
     userName(){
       var userInfo = store.state.userName;
-      console.log(userInfo);
       return userInfo;
     }
   },
@@ -98,6 +100,14 @@ export default {
       )
     },
 
+    gotoLogin() {
+      this.$router.push(
+        {
+          name: "login",
+        }
+      )
+    },
+
       // 退出事件
     logout() {
       this.$confirm('确定退出系统?', '提示', {
@@ -106,14 +116,11 @@ export default {
         type: 'info'
       }).then(() => {
         this.$store.dispatch('userLogout')
-        // this.$store.commit('SET_PERMS', '')
         this.$message({
           type: 'success',
           message: '退出成功!'
         })
-        setTimeout(() => {
-          location.reload() // 强制刷新
-        }, 1000)
+        location.reload()
       }).catch(() => {
         this.$message({
           type: 'info',

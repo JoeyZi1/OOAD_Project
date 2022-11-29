@@ -7,6 +7,8 @@ import 'nprogress/nprogress.css'
 import store from '@/store'
 // 创建axios实例
 
+nprogress.configure({ showSpinner: false });
+
 const requests = axios.create({
     baseURL:"http://10.27.133.155:8080",
     // 请求超时的时间
