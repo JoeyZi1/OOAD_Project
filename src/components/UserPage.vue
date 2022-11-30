@@ -1,12 +1,20 @@
 <template>
-    <div>
+  <div>
+    <div style="min-height: 850px;">
         <div class="container-xxl">
   <div class="row">
+    
     <div class="col-md-3 col-0 border-end">
-      <img class="media-object img-thumbnail rounded-circle w-100 mb-3">
-      
-      <div class="vstack gap-2 w-100">
-        <div class="w-100"><h4>{{userName}}</h4></div>
+       
+      <img class="mt-3 media-object img-thumbnail rounded-circle w-100 mb-3" :src="MockImg" style="max-width: 310px;">
+      <div class="vstack gap-2 w-100 mt-3">
+      <div class="w-100">
+          
+
+        <h4 class="ms-2">{{userName}}</h4> 
+          
+      </div>
+
         <button v-if="account===userName" type="button" class="btn btn-outline-secondary" disabled>Follow</button>
         <button v-else type="button" class="btn btn-outline-secondary">Follow</button>
 
@@ -17,7 +25,7 @@
               <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
               <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
             </svg>
-            <span style="margin-right: 2px">0</span>Followes
+            <span style="margin-right: 2px">0</span>Followers
           </el-link>
           <span style="margin-right: 2px">·</span>
           <el-link :underline="false"><span style="margin-right: 2px">0</span>Following</el-link></div>
@@ -66,8 +74,12 @@
               <div class="card text-start">
                 <div class="card-body">
                   <div class="hstack"> 
-                    <h5 class="card-title">{{recommendPepo1.repoName}}</h5>
-                    <span class="badge rounded-pill bg-secondary ms-auto">{{recommendPepo1.permission}}</span>
+
+                    <el-link class="text-primary" style="margin-right: 8px" @click="enterRepo(recommendPepo1.repoName)"  data-bs-dismiss="modal">
+                      <h5 class="card-title">{{recommendPepo1.repoName}}</h5>
+                    </el-link>   
+
+                    <span class="badge rounded-pill bg-secondary ms-auto">{{checkVisibility(recommendPepo1.authority)}}</span>
                   </div> 
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                   <div class="hstack">
@@ -99,8 +111,10 @@
               <div class="card text-start">
                 <div class="card-body">
                   <div class="hstack"> 
-                    <h5 class="card-title">{{recommendPepo2.repoName}}</h5>
-                    <span class="badge rounded-pill bg-secondary ms-auto">{{recommendPepo2.permission}}</span>
+                    <el-link class="text-primary" style="margin-right: 8px" @click="enterRepo(recommendPepo2.repoName)"  data-bs-dismiss="modal">
+                      <h5 class="card-title">{{recommendPepo2.repoName}}</h5>
+                    </el-link>  
+                    <span class="badge rounded-pill bg-secondary ms-auto">{{checkVisibility(recommendPepo2.authority)}}</span>
                   </div>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                   <div class="hstack">
@@ -123,8 +137,10 @@
               <div class="card text-start">
                 <div class="card-body">
                   <div class="hstack"> 
-                    <h5 class="card-title">{{recommendPepo3.repoName}}</h5>
-                    <span class="badge rounded-pill bg-secondary ms-auto">{{recommendPepo3.permission}}</span>
+                    <el-link class="text-primary" style="margin-right: 8px" @click="enterRepo(recommendPepo3.repoName)"  data-bs-dismiss="modal">
+                      <h5 class="card-title">{{recommendPepo3.repoName}}</h5>
+                    </el-link>  
+                    <span class="badge rounded-pill bg-secondary ms-auto">{{checkVisibility(recommendPepo3.authority)}}</span>
                   </div>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                   <div class="hstack">
@@ -144,8 +160,10 @@
               <div class="card text-start">
                 <div class="card-body">
                   <div class="hstack"> 
-                    <h5 class="card-title">{{recommendPepo4.repoName}}</h5>
-                    <span class="badge rounded-pill bg-secondary ms-auto">{{recommendPepo4.permission}}</span>
+                    <el-link class="text-primary" style="margin-right: 8px" @click="enterRepo(recommendPepo4.repoName)"  data-bs-dismiss="modal">
+                      <h5 class="card-title">{{recommendPepo4.repoName}}</h5>
+                    </el-link>  
+                    <span class="badge rounded-pill bg-secondary ms-auto">{{checkVisibility(recommendPepo4.authority)}}</span>
                   </div>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                   <div class="hstack">
@@ -163,7 +181,24 @@
             </div>
           </div>
 
-          <div class="text-start mt-3" style="font-weight: bolder;">User overview</div>
+          <div class="text-start mt-5 mb-1" style="font-weight: bolder;">User overview</div>
+          <div class="card mt-2">
+            <div class="card-body">
+              <v-sparkline
+                :fill=true
+                :gradient="gradient"
+                :line-width="width"
+                :padding="padding"
+                :smooth="radius || false"
+                :value="value"
+                auto-draw
+              ></v-sparkline>
+            </div>
+          </div>
+          
+            
+          
+          
 
 
 
@@ -246,27 +281,27 @@
               </el-form>
             </el-dialog>
 
-            <ul class="list-group list-group-flush" v-for="repo in repoList" :key="repo.id">
+            <ul class="list-group list-group-flush" v-for="repo in controlRepoList" :key="repo.id">
               <li class="list-group-item p-4 border-bottom">
                 <div class="d-flex w-100 justify-content-start mb-2">
-                    <el-link style="margin-right: 8px" @click="enterRepo(repo.repoName)">
+                    <el-link class="text-primary" style="margin-right: 8px" @click="enterRepo(repo.repoName)">
                     <span class="repoName">{{repo.repoName}}</span>
                     </el-link>
                   
-                  <span class="badge rounded-pill bg-secondary me-auto align-self-center">{{repo.permission}}</span>
-                  <button style="margin-right: 20px" type="button" class="btn btn-outline-secondary oneLine">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 1.5 16 16">
-                      <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
-                      </svg>
-                      Star
-                  </button>  
-                  <el-button type="danger"  @click="deleteRepo(repo.repoName)">Delete</el-button>
+                  <span class="ms-2 badge rounded-pill bg-secondary me-auto align-self-center">{{checkVisibility(repo.authority)}}</span>
+
                 </div>
 
-
-                <div class="d-flex w-100 justify-content-start mb-3">
-                  <small>{{repo.msg}}</small>
-                </div>
+                <div class="hstack">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                    <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                  </svg>
+                  <span class="ms-1 me-1">{{repo.star}}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-2 ms-2" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H11a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 5 7h2.5V6A1.5 1.5 0 0 1 6 4.5v-1zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1zM3 11.5A1.5 1.5 0 0 1 4.5 10h1A1.5 1.5 0 0 1 7 11.5v1A1.5 1.5 0 0 1 5.5 14h-1A1.5 1.5 0 0 1 3 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 9 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
+                  </svg>
+                  <span class="ms-1 me-1">{{repo.fork}}</span>
+                </div>             
               </li>
             </ul>
             
@@ -279,10 +314,40 @@
         </div>
         <!-- //仓库管理区域 -->
 
-
+        
+        <!-- star  -->
         <div class="tab-pane fade" id="star-tab-pane" role="tabpanel" aria-labelledby="star-tab" tabindex="0">
-            Stars
+
+          <ul class="list-group list-group-flush" v-for="repo in starRepoList" :key="repo.id">
+              <li class="list-group-item p-4 border-bottom">
+                <div class="d-flex w-100 justify-content-start mb-2">
+                    <el-link class="text-primary" style="margin-right: 8px" @click="enterStarRepo(repo.agentName,repo.repoName)">
+                    <span class="repoName">{{repo.repoName}}</span>
+                    </el-link>       
+                  <span class="ms-2 badge rounded-pill bg-secondary me-auto align-self-center">{{checkVisibility(repo.authority)}}</span>
+
+                  <Avatar class="btn btn-outline me-1" :username="repo.agentName" color="#fff" :background-color="extractColorByName(repo.agentName)" :size=25 id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  </Avatar>
+                  {{repo.agentName}}
+                </div>
+
+                
+
+                <div class="hstack">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                    <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                  </svg>
+                  <span class="ms-1 me-1">{{repo.star}}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-2 ms-2" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H11a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 5 7h2.5V6A1.5 1.5 0 0 1 6 4.5v-1zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1zM3 11.5A1.5 1.5 0 0 1 4.5 10h1A1.5 1.5 0 0 1 7 11.5v1A1.5 1.5 0 0 1 5.5 14h-1A1.5 1.5 0 0 1 3 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1A1.5 1.5 0 0 1 9 12.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
+                  </svg>
+                  <span class="ms-1 me-1">{{repo.fork}}</span>
+                </div>             
+              </li>
+            </ul>
+
         </div>
+        <!-- star -->
         </div>
 
 
@@ -290,7 +355,20 @@
     </div>
   </div>
 </div>
+
+
     </div>
+
+    <v-footer padless class="mt-5">
+  <v-col
+    class="text-center"
+    cols="12"
+  >
+    {{ new Date().getFullYear() }} — <strong>CS309 Project</strong>
+  </v-col>
+</v-footer>
+
+  </div>
 </template>
 
 <style>
@@ -353,13 +431,37 @@ import Demo from './Demo.vue'
 import Avatar from 'vue-avatar'
 import store from '@/store'
 
+const gradients = [
+  ['#222'],
+  ['#42b3f4'],
+  ['red', 'orange', 'yellow'],
+  ['purple', 'violet'],
+  ['#00c6ff', '#F0F', '#FF0'],
+  ['#f72047', '#ffd200', '#1feaea'],
+]
+
 export default {
   components: {
     Demo,
     Avatar
   },
 
+  watch: {
+  },
+
   computed: {
+    testHeight() {
+      return parseInt((window.innerWidth)/70) 
+    },
+    controlRepoList() {
+      if (this.account===this.$route.params.userName) {
+        return this.repoList;
+      } else {
+        const publicrepo = this.repoList.filter(item => (item.authority === 1)||(item.contributors.indexOf(store.state.userName)>-1))
+        return publicrepo
+      }
+    },
+
     account(){
       var userInfo = store.state.userName;
       return userInfo;
@@ -383,7 +485,7 @@ export default {
     },
 
     rankRepoList() {
-      const public_arr = this.repoList.filter(item => item.permission === "public")
+      const public_arr = this.repoList.filter(item => this.checkVisibility(item.authority) === "public")
       public_arr.sort((p1, p2) => {
         return (p2.star + p2.fork) - (p1.star + p1.fork)
       })
@@ -423,16 +525,50 @@ export default {
     },
   },
 
-  mounted: function() {
-    axios.get(this.$route.path).then((response)=>{
+ 
+
+  created: async function() {
+    if (sessionStorage.getItem("name")){
+        store.commit('USERNAME', sessionStorage.getItem('name'))
+        sessionStorage.removeItem('name')
+    }
+    window.addEventListener('beforeunload',()=>{
+      sessionStorage.setItem('name', store.state.userName)
+    })
+
+    await axios.get(this.$route.path).then((response)=>{
     // axios.get(this.$route.path).then((response)=>{
       this.repoList = response.repoList
       this.userName = response.userName
+      this.starRepoList = response.StarRepo
+    })
+
+    await axios.get('/mock/'+this.userName).then((response)=>{
+      this.MockImg = response.Img
     })
   },
 
+  // created:function() {
+    
+  // },
+
   data: function(){
     return {
+      //控件
+      fill: true,
+      gradient: gradients[4],
+      gradients,
+      padding: 8,
+      radius: 10,
+      value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0],
+      width: 2,
+
+
+
+
+
+      starRepoList: [],
+      MockImg: '',
       createRepoRules: {
         repoName: [{ required: true, message: "Please enter the repository name!", trigger: "blur" }],
         permission: [{ required: true, message: "Please choose permission!", trigger: "blur" }],
@@ -443,19 +579,32 @@ export default {
       userName: "",
       userImg: "",
       repoList: [
-        {repoName: 'Demo', permission: 'public', msg: 'Updated 2 days ago', star: 2, fork: 1},
-        {repoName: 'CS309', permission: 'private', msg: 'Updated 2 days ago', star: 1, fork: 1},
-        {repoName: 'Demo2', permission: 'public', msg: 'Updated 2 days ago', star: 1, fork: 1},
-        {repoName: 'Demo3', permission: 'public', msg: 'Updated 2 days ago', star: 1, fork: 0},
-        {repoName: 'Demo4', permission: 'public', msg: 'Updated 2 days ago', star: 0, fork: 1},
-        {repoName: 'Demo5', permission: 'public', msg: 'Updated 2 days ago', star: 0, fork: 0},
+
+
       ]
     }
   },
 
   methods: {
-    test: function() {
-      axios.get('/UserPage/'+this.$route.params.userName+'/checkToken').then((response)=>{
+    extractColorByName(name) {
+	      var temp = [];
+	      temp.push("#");
+	      for (let index = 0; index < name.length; index++) {
+	        temp.push(parseInt(name[index].charCodeAt(0), 10).toString(16));
+	      }
+	      return temp.slice(0, 5).join('').slice(0, 4);
+	    },
+
+    checkVisibility: function(auth) {
+      if (auth === 1){
+        return "public"
+      } else {
+        return "private"
+      }
+    },
+
+    test: async function() {
+      await axios.get('/UserPage/'+this.$route.params.userName+'/checkToken').then((response)=>{
       console.log("-------response------");
       console.log(response);
     })
@@ -484,7 +633,6 @@ export default {
           if(valid){
             this.createRepoFormVisible = false
             var createjudge = 0
-            console.log(this.createRepoForm.permission)
             await axios.get("/Repository/init/" + this.$route.params.userName + '/' +  this.createRepoForm.repoName + '/' + this.createRepoForm.permission).then((response)=>{
               console.log(response.code)
               createjudge = response
@@ -527,11 +675,28 @@ export default {
           }
         }
       )
+      //console.log(this.$route.path)
+    },
+
+    enterStarRepo: function(user, repoName){ 
+      this.$router.push(
+        {
+          name: "RepoBrowser",
+          params:{
+            userName: user,
+            repoParam: repoName,
+            branchName: "master",
+            queryPath: "root"
+          }
+        }
+      )
 
       //console.log(this.$route.path)
     }
 
-  }
+  },
+
+ 
 }
 
 </script>

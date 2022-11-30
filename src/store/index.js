@@ -32,17 +32,18 @@ const store = new Vuex.Store({
             if(judge) {
                 // 存放token
                 context.commit('USERLOGIN',token);
-                // localStorage.setItem('Token',token);
+                // localStorage.setItem('Token',token)
+                window.sessionStorage.removeItem('Token')
                 window.sessionStorage.setItem('Token', token)
+
 
                 //记录用户信息
                 context.commit('USERNAME', form.account);
-                return 'ok';
+                return judge;
             } else {
                 // 登录失败
-                return Promise.reject(new Error(result.message));
+                return judge;
             }
-            return judge;
         },
 
         userLogout(context) {
@@ -54,26 +55,26 @@ const store = new Vuex.Store({
                 // console.log(localStorage.getItem('Token'));
                 // console.log("--------after remove storage-------");
 
+                context.commit('USERNAME', '');
                 window.sessionStorage.removeItem('Token');
                 resolve()
             })
             
         },
 
-        getUserInfo() {
-            let result = axios.get('/UserPage/'+this.$route.params.userName+'/checkToken').then((response)=>{
-                console.log("-------response------");
-                console.log(response);
-              })
-
-            if(result.code === 200) {
-                context.commit('USERNAME',result.name);
-                return 'ok';
-            } else {
-                return Promise.reject(new Error(result.message));
-            }
-
-        }
+        // getUserInfo() {
+        //     let result = axios.get('/CheckToken').then((response)=>{
+        //         context.commit('USERNAME',response.name);
+        //         if (response.name === null || response.name === "" || response.name === undefined){
+        //             return false
+        //         } else {
+        //             return true
+        //         }
+        //     }).catch(function (error) {
+        //         return false
+        //     });
+        //     return false;
+        // }
 
     },
     getters:{

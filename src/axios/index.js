@@ -7,6 +7,8 @@ import 'nprogress/nprogress.css'
 import store from '@/store'
 // 创建axios实例
 
+import router from '../router/index'
+
 nprogress.configure({ showSpinner: false });
 
 const requests = axios.create({
@@ -17,21 +19,37 @@ const requests = axios.create({
  
 // 请求拦截器 -- 在请求发出前做些事情
 requests.interceptors.request.use((config) => {
-    // 需要携带token给服务器
-    if(store.state.token) {
-        config.headers.Token = store.state.token;
+    if(window.sessionStorage.getItem('Token')) {
+        console.log('has token')
+        console.log(window.sessionStorage.getItem('Token'))
+        config.headers.Token = window.sessionStorage.getItem('Token');
     }
     nprogress.start();
-    // config 是配置对象，里面包含请求头headers
     return config;
 });
  
 // 响应拦截器 
 requests.interceptors.response.use((res) => {
+    console.log('response')
+    console.log(res)
     nprogress.done();
     return res.data;
 },(err) => {
-    return Promise.reject(new Error('fail'))
+    console.log('err response')
+    console.log(err)
+    console.log(err.response.status)
+    if (err.response.status === 401) {
+        alert('forbidden')
+        router.push({
+        name: "404",
+        })
+    }
+    if (err.response.status === 500 || err.response.status === 404) {
+        nprogress.done();
+    }
+    nprogress.done();
+    return false
+    // return Promise.reject(new Error('fail'))
 });
  
 export default requests;

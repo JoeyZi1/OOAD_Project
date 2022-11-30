@@ -1,17 +1,20 @@
 <template>
-<div>
+<div >
+
+<div style="min-height: 850px;">
 <div class="container-fluid bg-light ps-0 pe-0">
   <div class="hstack gap-1 align-items-center pt-4 ps-5 pe-5 mb-4" style="height: 45px;">
     <!-- <button type="button" class="btn btn-primary" @click="test()">test</button> -->
     
-    <svg v-if="true" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+    <svg v-if="visibility===private_" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-lock me-2" viewBox="0 0 16 16">
       <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
     </svg>
-    <svg v-else xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 3px;" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
+    <svg v-else xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 3px;" width="16" height="16" fill="currentColor" class="bi bi-box-seam me-2" viewBox="0 0 16 16">
       <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
     </svg>
 
-    <el-breadcrumb separator="/" style="margin-right: auto;">
+    
+    <el-breadcrumb separator="/" style="margin-right: 5px;">
       <el-breadcrumb-item :to="{name:'UserPage' , params:{userName: this.$route.params.userName}}">
         <a style="font-size: 20px;" >
           {{this.$route.params.userName}}
@@ -23,10 +26,11 @@
         </a>
       </el-breadcrumb-item>
     </el-breadcrumb>
+    <span class="badge rounded-pill bg-secondary" style="margin-right: auto;">{{visibility}}</span>
 
 
 
-    <button type="button" class="btn btn-outline-secondary oneLine btn-sm">
+    <button type="button" class="btn btn-outline-secondary oneLine btn-sm" @click="clickWatch()">
       <svg v-if="!haveWatched" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
         <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
         <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
@@ -37,11 +41,24 @@
       </svg>
       <span v-if="!haveWatched" class="ms-1">watch</span>
       <span v-else class="ms-1">unwatch</span>
-      <span v-if="PRNumber > 0" class="badge rounded-pill bg-secondary ms-1">{{repoWatch}}</span>
+      <span v-if="repoWatch > 0" class="badge rounded-pill bg-secondary ms-1">{{repoWatch}}</span>
     </button>  
-    <button type="button" class="btn btn-outline-secondary oneLine btn-sm" @click="startFork();flush();">
-      fork
+
+    <button v-if="(!haveForked)&&(!isSelf)" type="button" class="btn btn-outline-secondary oneLine btn-sm" @click="startFork();flush();">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bezier2 me-1" viewBox="0 1 16 16">
+        <path fill-rule="evenodd" d="M1 2.5A1.5 1.5 0 0 1 2.5 1h1A1.5 1.5 0 0 1 5 2.5h4.134a1 1 0 1 1 0 1h-2.01c.18.18.34.381.484.605.638.992.892 2.354.892 3.895 0 1.993.257 3.092.713 3.7.356.476.895.721 1.787.784A1.5 1.5 0 0 1 12.5 11h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5H6.866a1 1 0 1 1 0-1h1.711a2.839 2.839 0 0 1-.165-.2C7.743 11.407 7.5 10.007 7.5 8c0-1.46-.246-2.597-.733-3.355-.39-.605-.952-1-1.767-1.112A1.5 1.5 0 0 1 3.5 5h-1A1.5 1.5 0 0 1 1 3.5v-1zM2.5 2a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm10 10a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
+      </svg>
+      <span class="ms-1">fork</span>
+      <span v-if="repoFork > 0" class="badge rounded-pill bg-secondary ms-1">{{repoFork}}</span>
+    </button> 
+    <button v-else type="button" class="btn btn-outline-secondary oneLine btn-sm" disabled>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bezier2 me-1" viewBox="0 1 16 16">
+        <path fill-rule="evenodd" d="M1 2.5A1.5 1.5 0 0 1 2.5 1h1A1.5 1.5 0 0 1 5 2.5h4.134a1 1 0 1 1 0 1h-2.01c.18.18.34.381.484.605.638.992.892 2.354.892 3.895 0 1.993.257 3.092.713 3.7.356.476.895.721 1.787.784A1.5 1.5 0 0 1 12.5 11h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5H6.866a1 1 0 1 1 0-1h1.711a2.839 2.839 0 0 1-.165-.2C7.743 11.407 7.5 10.007 7.5 8c0-1.46-.246-2.597-.733-3.355-.39-.605-.952-1-1.767-1.112A1.5 1.5 0 0 1 3.5 5h-1A1.5 1.5 0 0 1 1 3.5v-1zM2.5 2a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm10 10a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
+      </svg>
+      <span class="ms-1">fork</span>
+      <span v-if="repoFork > 0" class="badge rounded-pill bg-secondary ms-1">{{repoFork}}</span>
     </button>  
+
     <button type="button" class="btn btn-outline-secondary oneLine btn-sm" @click="clickStar()">
       <svg v-if="!haveStared" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
         <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
@@ -51,7 +68,7 @@
       </svg>
       <span v-if="!haveStared" class="ms-1">star</span>
       <span v-else class="ms-1">unstar</span>
-      <span v-if="PRNumber > 0" class="badge rounded-pill bg-secondary ms-1">{{repoStar}}</span>
+      <span v-if="repoStar > 0" class="badge rounded-pill bg-secondary ms-1">{{repoStar}}</span>
 
     </button>   
   </div>
@@ -171,7 +188,7 @@
                 <el-input v-model="branchform.name"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="submitBranchForm('branchform')">Submit</el-button>
+                <el-button type="primary" @click="submitBranchForm('branchform');flush()">Submit</el-button>
                 <el-button type="danger" @click=" branchFormVisible = false; this.branchform.name=''">Cancel</el-button>
               </el-form-item>
             </el-form>
@@ -183,8 +200,8 @@
               Add
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_upload_file">Upload file</a></li>
-              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_upload_folder">Upload folder</a></li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_upload_file" @click="clearUpFile()">Upload file</a></li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_upload_folder" @click="clearUpFile()">Upload folder</a></li>
             </ul>
           </div>
 
@@ -201,7 +218,8 @@
                       <!-- <input type="file" class="form-control mb-2" webkitdirectory directory multiple/> -->
                       <form enctype="multipart/form-data">
                           <input class="form-control mb-2" type="file" @change="getFile($event)">
-                          <button type="button" class="btn btn-primary"  @click="submitForm($event);flush();" data-bs-dismiss="modal">提交</button>
+                          <button v-if="file===''" type="button" class="btn btn-outline-primary"  @click="submitForm($event);flush();" data-bs-dismiss="modal" disabled>文件为空</button>
+                          <button v-else type="button" class="btn btn-primary"  @click="submitForm($event);flush();" data-bs-dismiss="modal">提交</button>
                       </form>
                   </div>
                 </div>
@@ -225,21 +243,16 @@
 
 
                 <form :action="uploadURL" enctype="multipart/form-data" method="post" target="targetIfr">
-                    <input class="form-control" id="dir" type="file" name="file" webkitdirectory mozdirectory/>
-                    <input class="btn btn-primary mt-1" @click="flush()" id="uploadDir" type="submit" value="提交文件夹" data-bs-dismiss="modal">
+                    <input @change="getFile($event)" class="form-control" id="dir" type="file" name="file" webkitdirectory mozdirectory/>
+                    <input v-if="file===''" class="btn btn-outline-primary mt-1" type="submit" value="文件夹为空" disabled>
+                    <input v-else class="btn btn-primary mt-1" @click="flush()" id="uploadDir" type="submit" value="提交文件夹" data-bs-dismiss="modal">
                 </form>  
                 <iframe name="targetIfr" style="display:none"></iframe>
 
 
-                  <!-- <div class="row mx-3">
-                      <form enctype="multipart/form-data">
-                          <input class="form-control mb-2" type="file" @change="getFile($event)" webkitdirectory mozdirectory>
-                          <button type="button" class="btn btn-primary"  @click="submitForm($event)" data-bs-dismiss="modal">提交</button>
-                      </form>
-                  </div> -->
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                 </div>
               </div>
             </div>
@@ -263,15 +276,15 @@
                 <span class="float-start">
                   {{item.branchName}}
                 </span>
-                <span class="float-end">
+                <!-- <span class="float-end">
                   <div class="btn btn-primary btn-sm">delete branch</div>
-                </span>
+                </span> -->
               </li>
             </ul>
           </div>
         </div>
 
-        <div class="card mb-4" style="width: 100%;">
+        <div class="card mb-4" style="width: 100%;" v-if="this.display=='list'">
           <div class="card-header text-start ps-3">
             Commit message
           </div>
@@ -301,30 +314,34 @@
             README.md
           </div>
           <div class="card-body">
-            <div class="markdown-body" style="text-align:left">
-              <markdown />
-              <markdown />
-              <markdown />
+            <h5 v-if="!markdownvalue">No README FILE</h5>
+            <div v-if="!markdownvalue">
+              <p class="card-text">Upload a README.md file</p>
+              <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_upload_file" @click="clearUpFile()">upload now</a>
+            </div>
+            <div v-else class="markdown-body" style="text-align:left">
+              <div v-html="markdownvalue"></div>
             </div>
           </div>
         </div>
 
-        <div class="card" v-else style="width: 100%;">
-          <div class="card-header text-start bg-light" style="font-weight: bolder;">
+        <div class="card" style="width: 100%;" v-if="this.display=='file'">
+          <div class="card-header text-start bg-light"  style="font-weight: bolder;">
             file content
           </div>
           <div class="card-body">
 
-            <div class="content" v-highlight>
-              <pre>
+            <div class="content" v-if="codeFile.length>5" v-highlight>
+              <pre >
                 <code>
                   {{codeFile}}
                 </code>
               </pre>
             </div>
-
+        
           </div>
         </div>
+        
       </div>
 
       <div v-if="this.$route.params.queryPath===root" class="col-md-3 col-0" style="text-align: left;">
@@ -346,7 +363,7 @@
                 <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
                 <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
               </svg>
-              <span style="margin-right: 2px">0</span>watching
+              <span style="margin-right: 2px">{{repoWatch}}</span>watching
             </el-link>
           </div>
 
@@ -355,7 +372,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bezier2 me-1" viewBox="0 1 16 16">
                 <path fill-rule="evenodd" d="M1 2.5A1.5 1.5 0 0 1 2.5 1h1A1.5 1.5 0 0 1 5 2.5h4.134a1 1 0 1 1 0 1h-2.01c.18.18.34.381.484.605.638.992.892 2.354.892 3.895 0 1.993.257 3.092.713 3.7.356.476.895.721 1.787.784A1.5 1.5 0 0 1 12.5 11h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5H6.866a1 1 0 1 1 0-1h1.711a2.839 2.839 0 0 1-.165-.2C7.743 11.407 7.5 10.007 7.5 8c0-1.46-.246-2.597-.733-3.355-.39-.605-.952-1-1.767-1.112A1.5 1.5 0 0 1 3.5 5h-1A1.5 1.5 0 0 1 1 3.5v-1zM2.5 2a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm10 10a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/>
               </svg>
-              <span style="margin-right: 2px">0</span>fork
+              <span style="margin-right: 2px">{{repoFork}}</span>fork
             </el-link>
           </div>
         </div>
@@ -364,11 +381,11 @@
           <!-- <v-divider color="grey"></v-divider> -->
         <div class="card mb-3" style="width:auto;">
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+            <h5 class="card-title">Information title</h5>
+            <h6 class="card-subtitle mb-2 text-muted">subtitle</h6>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
+            <a class="card-link">Card link</a>
+            <a class="card-link">Another link</a>
           </div>
         </div>
 
@@ -465,10 +482,10 @@
                       <input type="text" v-model="issueTitle" class="form-control" placeholder="Enter a Issue title" >
                     </div>
 
-                    <div class="input-group mb-3">
+                    <!-- <div class="input-group mb-3">
                       <span class="input-group-text" id="basic-addon1">Comment</span>
                       <input type="text" v-model="issueComment" class="form-control" placeholder="Add a comment" >
-                    </div>
+                    </div> -->
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -488,7 +505,8 @@
           {{issueShow}}<span> issue</span>
         </div>
 
-        <v-expansion-panels>
+        <v-expansion-panels >
+          <!-- {{issueList.length}} -->
           <v-expansion-panel v-for="item in filterIssueList" :key="item.id">
             <v-expansion-panel-header>
               <div class="hstack">
@@ -501,6 +519,9 @@
               <el-link>
                 {{item.issueName}}
               </el-link>
+              <!-- {{item.issueCondition}} -->
+              <!-- {{String(issueShow)}}
+              {{String(item.issueCondition)}} -->
               </span>
               </div>
             </v-expansion-panel-header>
@@ -508,41 +529,45 @@
               
 
 
-              <v-timeline align-top=true dense=true>
+              <v-timeline align-top=true dense=true class="text-start">
                 <v-timeline-item v-for="entry in item.issueContent" :key="entry.id">
                   <template v-slot:icon>
-                    <v-avatar color="orange" size="48">
-                      <span class="white--text headline">{{entry.user.slice(0,2)}}</span>
-                    </v-avatar>
+                    <Avatar class="btn btn-outline " :username="entry.anchor.slice(0,2)" color="#fff" :background-color="extractColorByName(entry.anchor.slice(0,2))" :size=35 id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    </Avatar>
                   </template>
-                  <v-card class="elevation-2">
-                    <v-card-title class="headline">{{entry.user}}</v-card-title>
-                    <v-card-subtitle>
-                      {{entry.comment}}
-                    </v-card-subtitle>
-                    <v-card-text>
-                      {{entry.commentDate}}
-                    </v-card-text>
-                  </v-card>
+
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">{{entry.anchor}}</h5>
+                      <h6 class="card-subtitle mb-2 text-muted">comment date: {{entry.time}}</h6>
+                      <p class="card-text">{{entry.comment}}</p>
+                      <!-- <a href="#" class="card-link">Card link</a>
+                      <a href="#" class="card-link">Another link</a> -->
+                    </div>
+                  </div>
+
                 </v-timeline-item>
               </v-timeline>
 
               <v-divider></v-divider>
 
 
-              <v-textarea clearable clear-icon="cancel" filled name="comments" v-model="issueComment"></v-textarea>
+              <v-textarea v-if="issueShow==='open'" clearable clear-icon="cancel" filled name="comments" v-model="issueComment"></v-textarea>
+              
+              <button v-if="issueShow==='open'" type="button" class="btn btn-primary me-3" @click="addComment(item.issueID);flush()">Add comment</button> 
 
-              <button type="button" class="btn btn-primary" @click="addComment(item.id)">Add comment</button> 
-
-
-
-
+              <button v-if="issueShow==='open'" type="button" class="btn btn-warning me-3" @click="CloseIssue(item.issueID);flush()">Close issue</button> 
+              
+              <button v-if="issueShow==='open'" type="button" class="btn btn-danger" @click="deleteIssue(item.issueID);flush()">Delete issue</button> 
 
 
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
+
+      
+
 
   </div>
   <!-- //Issue -->
@@ -553,24 +578,13 @@
   <!-- setting -->
   <div class="tab-pane fade" id="star-tab-pane" role="tabpanel" aria-labelledby="star-tab" tabindex="0">
     <div class="hstack mt-3 mb-3">
-      <div class="btn btn-outline-danger" @click="deleteRepo();flushAndJump();">Delete this repository</div>
+      <h4>Danger zone:</h4>
+      <div class="btn btn-outline-danger ms-3" @click="deleteRepo();flushAndJump();">Delete this repository</div>
     </div>
-    <div class="card">
-      <div class="card-body">
-        <div class="hstack mt-3 mb-3">
-          <h4>Change repository visibility</h4>
-        </div>
-      </div>
-    </div>
+    
 
-    <div class="card">
-      <div class="card-header">
-        Contributers
-      </div>
-    </div>
-
-    <div class="hstack mt-3 mb-3">
-      <h4>Manage contributers</h4>
+    <div class="hstack mt-5 mb-3">
+      <h4>Manage contributers:</h4>
       <div type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#modal_add_contributer">add poeple</div>
 
 
@@ -612,7 +626,9 @@
               </Avatar>
             </div>
             <div class="ms-3">{{contributer.name}}</div>
-            <div type="button" class="btn btn-outline-danger btn-sm ms-auto" @click="deleteContributer(contributer.name)">remove</div>
+
+            <button v-if="$route.params.userName===contributer.name" type="button" class="btn btn-outline-danger btn-sm ms-auto" disabled>remove</button>
+            <button v-else type="button" class="btn btn-outline-danger btn-sm ms-auto" @click="deleteContributer(contributer.name)">remove</button>
           </div>
         </li>
       </ul>
@@ -625,7 +641,7 @@
   <!-- PR -->
   <div class="pr-pane fade" id="pr-tab-pane" role="tabpanel" aria-labelledby="pr-tab" tabindex="0">
     <div class="hstack gap-3 border-bottom resetPadding mb-3">
-          <input class="form-control me-auto" type="text" placeholder="Find an issue..." aria-label="Find an issue..." @keyup.enter="submit">
+          <input class="form-control me-auto" type="text" placeholder="Find an pull reuqest..." aria-label="Find an issue..." @keyup.enter="submit">
           
               <div class="btn-group" role="group">
                   <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -799,6 +815,8 @@
 </div>
 
 
+</div>
+
 
 <v-footer padless class="mt-5">
   <v-col
@@ -812,6 +830,7 @@
 <v-overlay absolute="true" :value="overlay">
   <v-progress-circular indeterminate size="64"></v-progress-circular>
 </v-overlay>
+
 
 </div>
 </template>
@@ -830,8 +849,8 @@ import markdown from '../file/README.md'
 import 'highlight.js/styles/github.css'
 // 其他元素使用 github 的样式
 import 'github-markdown-css'
-import Avatar from 'vue-avatar'
 import store from '@/store'
+import Avatar from 'vue-avatar'
 
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -849,11 +868,15 @@ export default {
 
   data: function() {
     return {
-      downloadURL: 'http://10.27.133.155:8080'+'/RepoBrowser/' + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' + this.$route.params.branchName+"/download",
+      checkNull: '',
+      visibility: 'public',
+      markdownvalue: '',
+      downloadURL: 'http://10.27.133.155:8080'+'/RepoBrowser/download/' + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' + this.$route.params.branchName+"/aaa/bbb/ccc/ddd",
       overlay: false,
-      uploadURL: 'http://10.27.133.155:8080'+this.$route.path+ '/upload',
+      uploadURL: 'http://10.27.133.155:8080'+this.$route.path+ '/upload/'+ store.state.userName,
 
       root: "root",
+      private_: "private",
       itemType_folder: "folder",
       itemType_file: "file",
       pageType_list: "list",
@@ -868,16 +891,14 @@ export default {
       branchRules: {
         name: [{ required: true, message: "Please enter the branch name!", trigger: "blur" }],
       },
-      markdownvalue:'<h3><a href=\"#jgit-\" name=\"jgit-\"></a>Jgit:</h3>\n<p>fasd</p>\n<p>ffasdf</p>\n<h4><a href=\"#1234q5afsd\" name=\"1234q5afsd\"></a>1234q5afsd</h4>\n<p>###### </p>\n<p>fasdf</p>\n<p>a</p>\n<h5><a href=\"#s1f\" name=\"s1f\"></a>s1f</h5>',
-  
       setitems: [
         { title: 'Dashboard', icon: 'dashboard' },
         { title: 'Account', icon: 'account_box' },
         { title: 'Admin', icon: 'gavel' },
       ],
       content,
-      codeFile: "\n#!/usr/bin/python\n# -*- coding: UTF-8 -*-\n\nimport socket# 客户端 发送一个数据，再接收一个数据\nclient = socket.socket(socket.AF_INET,socket.SOCK_STREAM) #声明socket类型，同时生成链接对象\nclient.connect(('localhost',6999)) #建立一个链接，连接到本地的6969端口\nwhile True:\n    # addr = client.accept()\n    # print '连接地址：', addr\n    msg = '欢迎访问菜鸟教程！'  #strip默认取出字符串的头尾空格\n    client.send(msg.encode('utf-8'))  #发送一条信息 python3 只接收btye流\n    data = client.recv(1024) #接收一个信息，并指定接收的大小 为1024字节\n    print('recv:',data.decode()) #输出我接收的信息\n    client.close()\n\n",
-      file: [],
+      codeFile: "",
+      file: '',
       commitList:[],
       rollbackJudge:0,
       branchform:{name:''},
@@ -927,7 +948,7 @@ export default {
       repoWatch: -1,
       haveStared: false,
       haveForked: false,
-      haveWatched: true,
+      haveWatched: false,
 
 
       //setting
@@ -949,43 +970,39 @@ export default {
           ]
         
         },
-        {issueName: "Consider adding keyboard shortcut image", issueCondition: "open",
-          issueContent: [
-              {comment: 'Test comment', user: 'Joey', commentDate: new Date()},
-              {comment: 'Test comment 2', user: 'Peter', commentDate: new Date()}
-            ]
-        
-        },
-        {issueName: "Consider adding tere", issueCondition: "closed",
-          issueContent: [
-              {comment: 'Test comment', user: 'Joey', commentDate: new Date()},
-              {comment: 'Test comment 2', user: 'Peter', commentDate: new Date()}
-            ]
-        
-        },
 
       ],
     }
   },
 
   methods: {
-    deleteRepo() {
-       axios.get('/Repository/delete/'+this.$route.params.userName+'/'+this.$route.params.repoParam).then((response)=>{
+    clearUpFile() {
+      this.file = ''
+    },
+
+    async deleteRepo() {
+       await axios.get('/Repository/delete/'+this.$route.params.userName+'/'+this.$route.params.repoParam).then((response)=>{
         this.$message({
-          type: 'success',
           message: '仓库删除!'
         })
       })
 
     },
 
-    startFork() {
-      axios.get('/PR/fork/'+store.state.userName+'/'+this.$route.params.repoParam+'/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+'master').then((response)=>{
+    async startFork() {
+      s = await axios.get('/PR/fork/'+store.state.userName+'/'+this.$route.params.repoParam+'/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+'master').then((response)=>{
+        console.log('fork response')
+        console.log(response)
         this.$message({
-          type: 'success',
-          message: 'merge发送!'
+          message: 'try to fork'
+        }).catch(function(error) {
+          console.log('errrrr')
+          console.log(error)
         })
       })
+
+      console.log('errrrr')
+      console.log(s)
     },
 
     codeDownload() {
@@ -1067,11 +1084,45 @@ export default {
       }
     },
 
-    addPR(repo) {
+    async clickWatch() {
+      if (this.haveWatched) { //remove watch
+        await axios.get('/watch/delete/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+store.state.userName).then((response)=>{
+          this.$message({
+            type: 'success',
+            message: 'remove watch!'
+          })
+        })
+        console.log(this.$route.path)
+        this.$router.push(
+        {
+          URL:this.$route.path,
+          query: {
+            path: +new Date() //保证每次点击路由的query项都是不一样的，确保会重新刷新view
+          }
+        })
+
+      } else { //add watch
+        await axios.get('/watch/add/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+store.state.userName).then((response)=>{
+          this.$message({
+            type: 'success',
+            message: 'watch this repo!'
+          })
+        })
+        console.log(this.$route.path)
+        this.$router.push(
+        {
+          URL:this.$route.path,
+          query: {
+            path: +new Date() //保证每次点击路由的query项都是不一样的，确保会重新刷新view
+          }
+        })
+      }
+    },
+
+    async addPR(repo) {
       console.log('add PR')
-      axios.get('/PR/Request/'+this.targetUser+'/'+repo+'/'+this.baseBrach+'/'+this.$route.params.userName+'/'+repo+'/'+this.compareBranch+'/'+this.PRTitleInput).then((response)=>{
+      await axios.get('/PR/Request/'+this.targetUser+'/'+repo+'/'+this.baseBrach+'/'+this.$route.params.userName+'/'+repo+'/'+this.compareBranch+'/'+this.PRTitleInput).then((response)=>{
         this.$message({
-          type: 'success',
           message: 'add PR!',
         })
       })
@@ -1079,20 +1130,18 @@ export default {
       this.flush()
     },
 
-    acptPR(repo,tar,tarBranch,from,fromBranch,id) {
-      axios.get('/PR/merge/'+tar+'/'+repo+'/'+tarBranch+'/'+from+'/'+repo+'/'+fromBranch+'/'+id).then((response)=>{
+    async acptPR(repo,tar,tarBranch,from,fromBranch,id) {
+      await axios.get('/PR/merge/'+tar+'/'+repo+'/'+tarBranch+'/'+from+'/'+repo+'/'+fromBranch+'/'+id).then((response)=>{
         this.$message({
-          type: 'success',
           message: 'accept merge!'
         })
       })
       this.flush()
     },
 
-    rejPR(repo,tar,tarBranch,from,fromBranch,id) {
-      axios.get('/PR/rejectMerge/'+tar+'/'+repo+'/'+tarBranch+'/'+from+'/'+repo+'/'+fromBranch+'/'+id).then((response)=>{
+    async rejPR(repo,tar,tarBranch,from,fromBranch,id) {
+      await axios.get('/PR/rejectMerge/'+tar+'/'+repo+'/'+tarBranch+'/'+from+'/'+repo+'/'+fromBranch+'/'+id).then((response)=>{
         this.$message({
-          type: 'success',
           message: 'reject merge!'
         })
       })
@@ -1100,23 +1149,21 @@ export default {
     },
 
     
-    inviteContributer() {
+    async inviteContributer() {
       var cont = this.addContributerPane;
       this.addContributerPane = '';
-      axios.get("/RepoBrowser/AddContributer/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  cont).then((response)=>{
+      await axios.get("/RepoBrowser/AddContributer/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  cont).then((response)=>{
         this.$message({
-          type: 'success',
-          message: 'add user!'
+          message: 'add user'
         })
       })
       this.flush()
     },
 
-    deleteContributer(name) {
-      axios.get("/RepoBrowser/removeContributer/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  name).then((response)=>{
+    async deleteContributer(name) {
+      await axios.get("/RepoBrowser/removeContributer/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  name).then((response)=>{
         this.$message({
-          type: 'success',
-          message: 'remove user!'
+          message: 'remove user'
         })
       })
       this.flush()
@@ -1181,9 +1228,9 @@ export default {
       this.baseBrach = b;
     },
 
-    shiftCompareBranch: function(b) {
+    shiftCompareBranch: async function(b) {
       this.compareBranch = b;
-      axios.get('/PR/getTargetInfo/'+this.$route.params.userName + '/'+this.$route.params.repoParam + '/' + b).then((response)=>{
+      await axios.get('/PR/getTargetInfo/'+this.$route.params.userName + '/'+this.$route.params.repoParam + '/' + b).then((response)=>{
         this.$message({
           type: 'success',
           message: 'change branch!'
@@ -1297,20 +1344,92 @@ export default {
       }
     },
 
-    addComment: function(name) {
+    async CloseIssue(id){
       var index = this.issueList.findIndex(issue => {
-            if (issue.id == name) {
+            if (issue.issueID == id) {
                 return true;
             }
       });
-      this.issueList[index].issueContent.push({comment: this.issueComment, user: "Joey", commentDate: new Date()})
+      var judge = 0
+      await axios.get("/Issue/openIssue/"+this.issueList[index].issueID+"/0").then((response)=>{
+          judge = response.status
+      })
+      if(judge == 1){
+        this.issueList[index].issueCondition = 'closed'
+        alert('Close successfully!')
+      }else{
+        alert('Close failed!')
+      }
+    },
+    async deleteIssue(id){
+      var index = this.issueList.findIndex(issue => {
+            if (issue.issueID == id) {
+                return true;
+            }
+      });
+      var judge = 0
+      console.log("/Issue/deleteIssue/"+this.issueList[index].issueID)
+      await axios.get("/Issue/deleteIssue/"+this.issueList[index].issueID).then((response)=>{
+          judge = response.status
+          console.log(response.status)
+      })
+      if(judge==1){
+        alert('Delete successfully!')
+        this.issueList.splice(index,1)
+      }else{
+        alert('Delete failed!')
+      }
+    },
+    addComment: async function(id) {
+      var index = this.issueList.findIndex(issue => {
+            if (issue.issueID == id) {
+                return true;
+            }
+      });
+      console.log('this is id',id)
+      console.log('thisis index',index)
+      var judge = 0
+      await axios.get("/Issue/commentIssue/"+this.issueList[index].issueID+'/'+this.$store.state.userName+'/'+this.issueComment).then((response)=>{
+          judge = response.status
+          console.log(response.status)
+      })
+      if(judge == 1){
+        alert('Comment successfully!')
+        this.issueList=[]
+        await axios.get('/Issue/showAllIssues/'+this.$route.params.userName+'/'+this.$route.params.repoParam).then((response)=>{
+        for(var i=0; i<response.issues.length; i++){
+            var entry = {issueID:response.issues[i].issueId,issueName:response.issues[i].title,issueCondition:response.issues[i].isClose=='1'?'open':'closed',issueContent:response.issues[i].content}
+            this.issueList.push(entry)
+        }
+       })
+       console.log(this.issueList)
+      }else{
+        alert('Comment failed!')
+      }
       this.issueComment = ''
     },
 
-    addIssue: function() {
-      var comment = [{comment: this.issueComment, user: "Joey", commentDate: new Date()}]
-      var entry = {issueName: this.issueTitle, issueCondition: "open", issueContent: comment}
-      this.issueList.push(entry)
+    addIssue: async function() {
+      var comment = []
+      var entry = {issueName: this.issueTitle, issueId:'', issueCondition: "open", issueContent: comment}
+      var judge = 0
+      var issueId = ''
+      console.log("/Issue/createIssue/"+this.$store.state.userName+'/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+this.issueTitle+'/1')
+      await axios.get("/Issue/createIssue/"+this.$store.state.userName+'/'+this.$route.params.userName+'/'+this.$route.params.repoParam+'/'+this.issueTitle+'/1').then((response)=>{
+          judge = response.status
+      })
+      if(judge == 0){
+        alert('Create issue failed!')
+      } else{
+        alert('Create issue successfully!')
+        this.issueList=[]
+        await axios.get('/Issue/showAllIssues/'+this.$route.params.userName+'/'+this.$route.params.repoParam).then((response)=>{
+        for(var i=0; i<response.issues.length; i++){
+            entry = {issueID:response.issues[i].issueId,issueName:response.issues[i].title,issueCondition:response.issues[i].isClose=='1'?'open':'closed',issueContent:response.issues[i].content}
+            this.issueList.push(entry)
+        }
+       })
+      }
       this.issueTitle = ''
       this.issueComment = ''
     },
@@ -1402,11 +1521,13 @@ export default {
       console.log(this.$route.path)
     },
 
+  
+
     getFile: function(event) {
       this.file = event.target.files[0];
     },
 
-    submitForm: function(event) {
+    submitForm: async function(event) {
       event.preventDefault();
       let formData = new FormData();
       formData.append('file', this.file);
@@ -1423,15 +1544,17 @@ export default {
        
       }
 
-      axios.post(this.$route.path+'/upload', formData, config).then(function (response) {
+      await axios.post(this.$route.path+'/upload/'+store.state.userName, formData, config).then(function (response) {
         if (response.status === 200) {
           console.log(response);
         }
       })
 
+      this.file = ''
+
     },
 
-    changeBranch: function(branch){
+    changeBranch: async function(branch){
       var user = this.$route.params.userName
       var repo = this.$route.params.repoParam
       var path = this.$route.params.queryPath
@@ -1450,7 +1573,7 @@ export default {
           // }
         }
       )
-      axios.get(this.$route.path).then((response)=>{
+      await axios.get(this.$route.path).then((response)=>{
         this.itemList = response.itemList
         this.branchList = response.branchList
         this.display = response.display
@@ -1460,25 +1583,50 @@ export default {
 
   },
 
-  created: function() {
-    axios.get(this.$route.path).then((response)=>{
+  created: async function() {
+    if (sessionStorage.getItem("name")){
+        store.commit('USERNAME', sessionStorage.getItem('name'))
+        sessionStorage.removeItem('name')
+    }
+    window.addEventListener('beforeunload',()=>{
+      sessionStorage.setItem('name', store.state.userName)
+    })
+
+    await axios.get(this.$route.path).then((response)=>{
       console.log(response)
       this.itemList = response.itemList
       this.branchList = response.branchList
       this.display = response.display
       this.fileContent = response.response
       this.haveStared = response.canStar
+      this.haveWatched = response.canWatch
       this.repoStar = response.Star
+      this.repoWatch = response.watch
+      this.repoFork = response.Fork
       this.PRList = response.PRList
+      this.visibility = response.Auth
       this.contributerList = response.contributorsList
+      this.markdownvalue = response.fileContent
+      this.codeFile = String("\n"+response.fileContent)
     })
-    axios.get("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/getCommitList').then((response)=>{
+    await axios.get("/RepoBrowser/" + this.$route.params.userName + '/' +  this.$route.params.repoParam + '/' +  this.$route.params.branchName + '/getCommitList').then((response)=>{
     this.commitList = response.commitList
+    })
+    this.issueList = []
+    await axios.get('/Issue/showAllIssues/'+this.$route.params.userName+'/'+this.$route.params.repoParam).then((response)=>{
+        for(var i=0; i<response.issues.length; i++){
+            var entry = {issueID:response.issues[i].issueId,issueName:response.issues[i].title,issueCondition:response.issues[i].isClose=='1'?'open':'closed',issueContent:response.issues[i].content}
+            this.issueList.push(entry)
+        }
+        
     })
 
   },
 
   computed: {
+      isSelf() {
+        return this.$route.params.userName===store.state.userName
+      },
       //将文件夹和文件分类排列
       filterItemList () {
         const folder_arr = this.itemList.filter(item => item.type === "folder")

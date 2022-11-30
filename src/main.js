@@ -21,6 +21,23 @@ import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 nprogress.configure({ showSpinner: false });
 
+Vue.directive('highlight', {
+  update(el){
+      let blocks = el.querySelectorAll('pre code');
+      blocks.forEach((block)=>{
+          if(block.getAttribute("highlighted")=="true"){
+              return
+          }
+          //防止已经高亮处理过的block再次被处理
+          block.setAttribute("highlighted","true")
+          //高亮
+          hljs.highlightElement(block)
+          //添加行号
+          lineNumbersBlock(block)
+      })
+  }
+})
+
 // router.beforeEach(async (to, from, next) => {
 //     if (to.path ==='/login') next();
 //     let token = window.sessionStorage.getItem('TOKEN');
@@ -60,15 +77,25 @@ nprogress.configure({ showSpinner: false });
 // })
 
 
-const  WhiteList = ['login']
+const  WhiteList = ["login","404"]
 router.beforeEach((to, from, next) => {
     nprogress.start();
     if (!WhiteList.includes(to.name)) {
-        let token = window.sessionStorage.getItem("Token")
-    // let token = store.state.token;
+      let token = window.sessionStorage.getItem("Token")
       console.log('now token is:')
       console.log(token)
       if (token) {
+        // if (!store.state.userName) {
+        //   if (store.dispatch('getUserInfo')) {
+        //     next()
+        //   } else {
+        //     Vue.prototype.$message({
+        //       type: "error",
+        //       message: "请先登录"
+        //     });
+        //     next('/login')
+        //   }
+        // }
         next()
       } else {
         Vue.prototype.$message({
@@ -88,22 +115,7 @@ router.afterEach(() => {
 })
 
 
-Vue.directive('highlight', {
-  update(el){
-      let blocks = el.querySelectorAll('pre code');
-      blocks.forEach((block)=>{
-          if(block.getAttribute("highlighted")=="true"){
-              return
-          }
-          //防止已经高亮处理过的block再次被处理
-          block.setAttribute("highlighted","true")
-          //高亮
-          hljs.highlightElement(block)
-          //添加行号
-          lineNumbersBlock(block)
-      })
-  }
-})
+
 
 
 Vue.prototype.$http = axios

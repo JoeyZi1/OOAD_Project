@@ -1,5 +1,7 @@
 <template>
-    <div class="bg-light">
+
+
+    <div >
     <div class="container-fluid">
       <div class="row">
         <div class="col text-center py-4 mt-2">
@@ -46,7 +48,7 @@
         <div class="col text-center">
           <div class="border py-3 rounded">
             <span>New to GitHub?</span>
-            <button type="button" class="btn btn-primary" @click="createAccount('loginForm')">Create an account.</button> 
+            <button type="button" class="btn btn-primary ms-3" @click="createAccount('loginForm')">Create an account.</button> 
           </div>
         </div>
       </div>
@@ -95,10 +97,10 @@
                 })
 
               } else{
-                 alert('Wrong account or passward!');
+                this.$message.error("账户或密码错误！")
               }
             } else {
-              alert('error submit!!');
+              this.$message.error('账户或密码为空！');
               return false;
             }
         });
@@ -108,14 +110,17 @@
           if (valid) {
              var data = {account:this.loginForm.account, passWord:this.loginForm.passWord}
              await axios.get('/login/signup/'+data.account+'/'+data.passWord)
-                            .then((response)=>{this.loginjudge = response.data})
+                            .then((response)=>{this.loginjudge = response})
              if(this.loginjudge==1){
-              alert('Create account successfully!');
+              this.$message({
+                type: 'success',
+                message: 'Create account successfully!'
+              })
              } else{
-              alert('Duplicate user name!');
+              this.$message.error('Duplicate user name!')
              }
           } else {
-            alert('error submit!!');
+            this.$message.error('error submit!!')
               return false;
           }
         });

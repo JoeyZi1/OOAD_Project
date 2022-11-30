@@ -12,7 +12,7 @@ const router = new VueRouter({
     routes: [
         {
             path: '/', 
-            redirect: "UserPage/JoeyZi1"
+            redirect: "login"
         },
         {
             path: '/UserPage/:userName',
@@ -25,8 +25,9 @@ const router = new VueRouter({
             component: RepoBrowser
         },
         {
-            path: '/404',
+            path: '/error',
             component: page404,
+            name: "404",
             hidden: true
         },
         {

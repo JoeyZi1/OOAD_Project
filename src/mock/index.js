@@ -212,8 +212,35 @@ let joey_repo_components = Mock.mock({
 // })
 
 
+let img = Mock.mock({
+    "Img": "@Image('900x900','@color', 'Random Image')",
+})
+
+const Random = Mock.Random
+
+Mock.mock(RegExp('http://10.27.133.155:8080/mock/'), "get", (options) =>{
+    console.log('mock')
+    console.log(options);
+    console.log(options.url.split('/'));
+    var t = options.url.split('/')
+    var name = t[t.length-1]
+    console.log(name)
+
+    var temp = [];
+    temp.push("#");
+    for (let index = 0; index < name.length; index++) {
+    temp.push(parseInt(name[index].charCodeAt(0), 10).toString(16));
+    }
+	var s = String(temp.slice(0, 5).join('').slice(0, 4));
+    console.log(s)
+
+    return Mock.mock({
+        "Img": Random.image('500x500', s, '#fff',name),
+    });
+});
 
 
+//http://10.27.133.155:8080/mock/
 
 let upload_response = Mock.mock({
     "status": 200
